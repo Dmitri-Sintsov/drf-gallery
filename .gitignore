@@ -1,0 +1,7 @@
+logs/
+.tox/
+__pycache__/
+*.pyc
+migrations/
+*.sqlite3
+

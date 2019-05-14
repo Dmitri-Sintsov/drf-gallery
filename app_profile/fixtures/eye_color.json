@@ -1,0 +1,26 @@
+[
+  {
+    "model": "app_profile.eyecolor",
+    "pk": 1,
+    "fields": {
+      "title": "Зеленые",
+      "description": ""
+    }
+  },
+  {
+    "model": "app_profile.eyecolor",
+    "pk": 2,
+    "fields": {
+      "title": "Голубые",
+      "description": ""
+    }
+  },
+  {
+    "model": "app_profile.eyecolor",
+    "pk": 3,
+    "fields": {
+      "title": "Карие",
+      "description": ""
+    }
+  }
+]

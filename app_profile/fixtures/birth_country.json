@@ -1,0 +1,26 @@
+[
+  {
+    "model": "app_profile.birthcountry",
+    "pk": 1,
+    "fields": {
+      "title": "Россия",
+      "description": ""
+    }
+  },
+  {
+    "model": "app_profile.birthcountry",
+    "pk": 2,
+    "fields": {
+      "title": "Украина",
+      "description": ""
+    }
+  },
+  {
+    "model": "app_profile.birthcountry",
+    "pk": 3,
+    "fields": {
+      "title": "Канада",
+      "description": ""
+    }
+  }
+]
