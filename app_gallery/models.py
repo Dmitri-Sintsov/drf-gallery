@@ -1,9 +1,11 @@
 import os
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Album(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='+', verbose_name='Владелец')
     title = models.CharField(max_length=30, unique=True, blank=False, verbose_name='Название альбома')
     description = models.TextField(max_length=255, blank=True, verbose_name='Описание альбома')
 
