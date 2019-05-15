@@ -1,8 +1,38 @@
 {% extends "base.html" %}
-{% load static %}
 
-{% block extrahead %}
+{% block content %}
+    <div id="app">
+        <div id="main_menu">
+            <ul>
+                <li><router-link to="/">В начало</router-link></li>
+                <li><router-link to="/signup">Зарегистрироваться</router-link></li>
+                <li><router-link to="/login">Войти</router-link></li>
+            </ul>
+        </div>
+        <div id="content">
+            <router-view></router-view>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block footer %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'vue/vue.js' %}"></script>
-    <script type="text/javascript" src="{% static 'main.js' %}"></script>
-{% endblock extrahead %}
+    <script type="text/html" id="home_template">
+        <div>Home</div>
+    </script>
+    <script type="text/html" id="signup_template">
+        <div>
+            <div><input v-model="first_name" placeholder="Имя"></div>
+            <div><input v-model="second_name" placeholder="Фамилия"></div>
+            <div><input v-model="email" placeholder="Адрес электронной почты"></div>
+            <div><input v-model="password" type="password" placeholder="Пароль"></div>
+            <div><input v-model="password2" type="password" placeholder="Пароль (повторно)"></div>
+            <div><input v-model="profile.eye_color" placeholder="Цвет глаз"></div>
+            <div><input v-model="profile.birth_country" placeholder="Страна рождения"></div>
+            <div><button v-on:click="submit()">Зарегистрироваться</button></div>
+        </div>
+    </script>
+    <script type="text/html" id="login_template">
+        <div>Login</div>
+    </script>
+{% endblock footer %}

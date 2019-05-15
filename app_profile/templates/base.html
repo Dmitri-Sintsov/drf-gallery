@@ -1,4 +1,5 @@
 {% extends "admin:admin/base.html" %}
+{% load static %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -7,3 +8,11 @@
 {% block content %}
     {{ block.super }}
 {% endblock content %}
+
+{% block footer %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/vue/vue.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/vue/vue-router.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/vue/vue-resource.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+{% endblock footer %}
