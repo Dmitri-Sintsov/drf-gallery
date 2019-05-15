@@ -17,13 +17,19 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 
-from app_profile.views import main
+from rest_framework.routers import DefaultRouter
+
+from app_profile.views import main, UserViewSet
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', main, name='main'),
 ]
+
+router = DefaultRouter()
+router.register(r'users', UserViewSet, basename='user')
+urlpatterns += router.urls
 
 if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns, static

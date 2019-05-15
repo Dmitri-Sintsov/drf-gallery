@@ -46,4 +46,4 @@ class Profile(models.Model):
         verbose_name_plural = 'Профили пользователей'
 
     def __str__(self):
-        return ' '.join([self.user.second_name, self.user.first_name, self.patronymic])
+        return ' '.join([self.user.last_name, self.user.first_name, self.patronymic])
