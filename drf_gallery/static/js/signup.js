@@ -10,8 +10,12 @@ var Signup = Vue.component('signup', {
                 password: '',
                 password2: '',
                 profile: {
-                    eye_color: '',
-                    birth_country: '',
+                    eye_color: {
+                        title: '',
+                    },
+                    birth_country: {
+                        title: '',
+                    },
                 },
             },
             // Form errors

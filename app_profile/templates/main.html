@@ -33,8 +33,8 @@
                 <div v-for="item in errors.password2"><span v-text="item"></span></div>
                 <div><input v-model="form.password2" type="password" placeholder="Пароль (повторно)"></div>
             </div>
-            <div><input v-model="form.profile.eye_color" placeholder="Цвет глаз"></div>
-            <div><input v-model="form.profile.birth_country" placeholder="Страна рождения"></div>
+            <div><input v-model="form.profile.eye_color.title" placeholder="Цвет глаз"></div>
+            <div><input v-model="form.profile.birth_country.title" placeholder="Страна рождения"></div>
             <div><button v-on:click="submit()">Зарегистрироваться</button></div>
         </div>
     </script>
