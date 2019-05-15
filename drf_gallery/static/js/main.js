@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         template: '#signup_template',
         data: function() {
             return {
+                // Form fields
                 first_name: '',
                 second_name: '',
                 email: '',
@@ -20,13 +21,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 profile: {
                     eye_color: '',
                     birth_country: '',
-                }
+                },
+                // Form errors
+                errors: {
+                    password: [],
+                    password2: [],
+                },
             };
         },
         methods: {
+            validate: function() {
+                var errors = [];
+                if (this.$data.password !== this.$data.password2) {
+                    errors.push('Пароли должны совпадать');
+                } else if (this.$data.password == '') {
+                    errors.push('Пароль не должен быть пустым');
+                }
+                this.$data.errors.password = errors;
+                this.$data.errors.password2 = errors;
+            },
             submit: function(event) {
+                this.validate();
                 console.log(JSON.stringify(this.$data));
-            }
+            },
         },
     });
     var Login = {

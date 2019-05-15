@@ -25,8 +25,14 @@
             <div><input v-model="first_name" placeholder="Имя"></div>
             <div><input v-model="second_name" placeholder="Фамилия"></div>
             <div><input v-model="email" placeholder="Адрес электронной почты"></div>
-            <div><input v-model="password" type="password" placeholder="Пароль"></div>
-            <div><input v-model="password2" type="password" placeholder="Пароль (повторно)"></div>
+            <div>
+                <div v-for="item in errors.password"><span v-text="item"></span></div>
+                <div><input v-model="password" type="password" placeholder="Пароль"></div>
+            </div>
+            <div>
+                <div v-for="item in errors.password2"><span v-text="item"></span></div>
+                <div><input v-model="password2" type="password" placeholder="Пароль (повторно)"></div>
+            </div>
             <div><input v-model="profile.eye_color" placeholder="Цвет глаз"></div>
             <div><input v-model="profile.birth_country" placeholder="Страна рождения"></div>
             <div><button v-on:click="submit()">Зарегистрироваться</button></div>
