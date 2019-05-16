@@ -1,4 +1,6 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
@@ -46,6 +48,8 @@ class UserSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
     password = serializers.CharField(min_length=8)
     profile = ProfileSerializer(required=True)
 
@@ -54,9 +58,29 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'email', 'password', 'profile']
 
     def create(self, validated_data):
-        user = User.objects.create_user(
-            validated_data['email'],
-            validated_data['email'],
-            validated_data['password']
+        profile_data = validated_data.pop('profile')
+        try:
+            key = 'eye_color'
+            eye_color = EyeColor.objects.get(**profile_data.pop('eye_color'))
+            key = 'birth_country'
+            birth_country = BirthCountry.objects.get(**profile_data.pop('birth_country'))
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError({
+                'profile': {
+                    key: {
+                        'title': ['Неизвестное значение'],
+                    }
+                }
+            })
+        validated_data['username'] = validated_data['email']
+        user = User.objects.create_user(**validated_data)
+        Profile.objects.create(
+            user=user,
+            eye_color=eye_color,
+            birth_country=birth_country,
+            **profile_data
         )
+        request = self.context.get('request')
+        if request:
+            auth_login(request, user)
         return user

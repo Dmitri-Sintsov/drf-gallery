@@ -1,29 +1,36 @@
 var Signup = Vue.component('signup', {
     template: '#signup_template',
     data: function() {
-        var fields = {
-            first_name: '',
-            last_name: '',
-            email: '',
-            password: '',
-            password2: '',
-            profile: {
-                eye_color: {
-                    title: '',
-                },
-                birth_country: {
-                    title: '',
-                },
-            },
-        };
         return {
             // Form fields
-            form: fields,
+            form: this.getInitialFields(),
             // Form errors
-            errors: _.cloneDeep(fields),
+            errors: this.getInitialFields([]),
         };
     },
     methods: {
+        getInitialFields: function(v) {
+            if (v === undefined) {
+                v = '';
+            }
+            return {
+                first_name: v,
+                last_name: v,
+                email: v,
+                password: v,
+                password2: v,
+                profile: {
+                    patronymic: v,
+                    birth_date: v,
+                    eye_color: {
+                        title: v,
+                    },
+                    birth_country: {
+                        title: v,
+                    },
+                },
+            };
+        },
         validate: function() {
             var errors = [];
             var form = this.$data.form;
@@ -45,8 +52,8 @@ var Signup = Vue.component('signup', {
                 var error = function(response) {
                     console.log(response);
                     if (response.status === 400) {
-                        this.$data.errors = Object.assign({}, this.$data.errors, response.body);
-                        // this.$data.errors = response.body;
+                        var fieldErrors = this.getInitialFields([]);
+                        this.$data.errors = _.assignIn(fieldErrors, response.body);
                     }
                 };
                 this.$http.post('/users/', this.$data.form).then(success, error);

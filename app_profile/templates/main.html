@@ -32,6 +32,14 @@
                 <div><input v-model="form.last_name" placeholder="Фамилия"></div>
             </div>
             <div>
+                <div v-for="item in errors.profile.patronymic"><span v-text="item"></span></div>
+                <div><input v-model="form.profile.patronymic" placeholder="Отчество"></div>
+            </div>
+            <div>
+                <div v-for="item in errors.profile.birth_date"><span v-text="item"></span></div>
+                <div><input v-model="form.profile.birth_date" placeholder="День рождения"></div>
+            </div>
+            <div>
                 <div v-for="item in errors.email"><span v-text="item"></span></div>
                 <div><input v-model="form.email" placeholder="Адрес электронной почты"></div>
             </div>

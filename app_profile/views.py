@@ -24,4 +24,5 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [UserViewSetPermission]
 
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        result = super().create(request, *args, **kwargs)
+        return result
