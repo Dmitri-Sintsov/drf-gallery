@@ -15,9 +15,10 @@
 
 {% block footer %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'js/vue/vue.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/vue/vue-router.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/vue/vue-resource.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/lib/lodash.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/lib/vue.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/lib/vue-router.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/lib/vue-resource.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/signup.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
 {% endblock footer %}

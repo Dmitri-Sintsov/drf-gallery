@@ -1,25 +1,26 @@
 var Signup = Vue.component('signup', {
     template: '#signup_template',
     data: function() {
-        return {
-            // Form fields
-            form: {
-                first_name: '',
-                last_name: '',
-                email: '',
-                password: '',
-                password2: '',
-                profile: {
-                    eye_color: {
-                        title: '',
-                    },
-                    birth_country: {
-                        title: '',
-                    },
+        var fields = {
+            first_name: '',
+            last_name: '',
+            email: '',
+            password: '',
+            password2: '',
+            profile: {
+                eye_color: {
+                    title: '',
+                },
+                birth_country: {
+                    title: '',
                 },
             },
+        };
+        return {
+            // Form fields
+            form: fields,
             // Form errors
-            errors: {},
+            errors: _.cloneDeep(fields),
         };
     },
     methods: {
@@ -38,11 +39,15 @@ var Signup = Vue.component('signup', {
         submit: function(event) {
             console.log(JSON.stringify(this.$data));
             if (this.validate()) {
-                var success = function(data) {
-                    console.log(data);
+                var success = function(response) {
+                    console.log(response);
                 };
-                var error = function(data) {
-                    console.log(data);
+                var error = function(response) {
+                    console.log(response);
+                    if (response.status === 400) {
+                        this.$data.errors = Object.assign({}, this.$data.errors, response.body);
+                        // this.$data.errors = response.body;
+                    }
                 };
                 this.$http.post('/users/', this.$data.form).then(success, error);
             }
