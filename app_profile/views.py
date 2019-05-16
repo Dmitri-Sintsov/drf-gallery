@@ -22,3 +22,6 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [UserViewSetPermission]
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)

@@ -44,8 +44,7 @@ var Signup = Vue.component('signup', {
                 var error = function(data) {
                     console.log(data);
                 };
-                var form = JSON.parse(JSON.stringify(this.$data.form));
-                this.$http.post('/users/', form).then(success, error);
+                this.$http.post('/users/', this.$data.form).then(success, error);
             }
         },
     },

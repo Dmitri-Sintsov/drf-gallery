@@ -1,28 +1,40 @@
 from django.contrib.auth.models import User
 
-from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework import serializers
+
+from drf_gallery.serializers import OptionalValidationSerializer
 
 from .models import EyeColor, BirthCountry, Profile
 
 
-class EyeColorSerializer(serializers.ModelSerializer):
+class EyeColorSerializer(OptionalValidationSerializer):
 
     class Meta:
         model = EyeColor
         fields = ['title', 'description']
+        extra_kwargs = {
+            'title': {
+                'validators': [UniqueValidator(queryset=EyeColor.objects.all())],
+            }
+        }
 
 
-class BirthCountrySerializer(serializers.ModelSerializer):
+class BirthCountrySerializer(OptionalValidationSerializer):
 
     class Meta:
         model = BirthCountry
         fields = ['title', 'description']
+        extra_kwargs = {
+            'title': {
+                'validators': [UniqueValidator(queryset=BirthCountry.objects.all())],
+            }
+        }
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    eye_color = EyeColorSerializer(required=True)
-    birth_country = BirthCountrySerializer(required=True)
+    eye_color = EyeColorSerializer(required=True, skip_validation=['title'])
+    birth_country = BirthCountrySerializer(required=True, skip_validation=['title'])
 
     class Meta:
         model = Profile
