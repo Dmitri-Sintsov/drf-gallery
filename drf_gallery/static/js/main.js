@@ -1,4 +1,22 @@
-document.addEventListener('DOMContentLoaded', function() {
+requirejs.config({
+    paths: {
+        'jquery': '/static/admin/js/vendor/jquery/jquery.min',
+        'text': '/static/js/require/text.min',
+        'Vue': '/static/js/vue/vue',
+        'VueRouter': '/static/js/vue/vue-router',
+        'VueResource': '/static/js/vue/vue-resource',
+    },
+});
+
+function loadComponent(name) {
+    return function (resolve) {
+        var result = require([name], resolve);
+        return result;
+    };
+}
+
+require(['jquery', 'Vue', 'VueRouter', 'VueResource'], function ($, Vue, VueRouter, VueResource) {
+
     var DELIMITER_PATCH = { replace: function() { return '^(?!.).' } };
     Vue.mixin({
         delimiters: [DELIMITER_PATCH, DELIMITER_PATCH]
@@ -14,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     var routes = [
         {path: '/', component: Home},
-        {path: '/signup', component: Signup},
+        {path: '/signup', component: loadComponent('/static/components/signup.js')},
         {path: '/login', component: Login}
     ];
     var router = new VueRouter({

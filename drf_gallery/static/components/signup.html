@@ -1,0 +1,39 @@
+<div>
+    <div>
+        <div v-for="item in errors.first_name"><span v-text="item"></span></div>
+        <div><input v-model="form.first_name" placeholder="Имя"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.last_name"><span v-text="item"></span></div>
+        <div><input v-model="form.last_name" placeholder="Фамилия"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.profile.patronymic"><span v-text="item"></span></div>
+        <div><input v-model="form.profile.patronymic" placeholder="Отчество"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.profile.birth_date"><span v-text="item"></span></div>
+        <div><input v-model="form.profile.birth_date" placeholder="День рождения"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.email"><span v-text="item"></span></div>
+        <div><input v-model="form.email" placeholder="Адрес электронной почты"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.password"><span v-text="item"></span></div>
+        <div><input v-model="form.password" type="password" placeholder="Пароль"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.password2"><span v-text="item"></span></div>
+        <div><input v-model="form.password2" type="password" placeholder="Пароль (повторно)"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.profile.eye_color.title"><span v-text="item"></span></div>
+        <div><input v-model="form.profile.eye_color.title" placeholder="Цвет глаз"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.profile.birth_country.title"><span v-text="item"></span></div>
+        <div><input v-model="form.profile.birth_country.title" placeholder="Страна рождения"></div>
+    </div>
+    <div><button v-on:click="submit()">Зарегистрироваться</button></div>
+</div>
