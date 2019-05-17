@@ -52,8 +52,8 @@ var Signup = Vue.component('signup', {
                 var error = function(response) {
                     console.log(response);
                     if (response.status === 400) {
-                        var fieldErrors = this.getInitialFields([]);
-                        this.$data.errors = _.assignIn(fieldErrors, response.body);
+                        var fieldErrors = $.extend(true, {}, this.getInitialFields([]), response.body)
+                        this.$data.errors = fieldErrors;
                     }
                 };
                 this.$http.post('/users/', this.$data.form).then(success, error);
