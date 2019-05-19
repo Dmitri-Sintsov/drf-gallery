@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
+
 
 from rest_framework.permissions import BasePermission
 from rest_framework import viewsets
@@ -17,7 +19,10 @@ class UserViewSetPermission(BasePermission):
 
 
 def main(request):
-    return render(request, 'main.html')
+    context = {}
+    if request.user.is_authenticated:
+        context['user_fields'] = model_to_dict(request.user, exclude=['password'])
+    return render(request, 'main.html', context)
 
 
 class UserViewSet(viewsets.ModelViewSet):

@@ -42,9 +42,9 @@ require(['jquery', 'Vue', 'VueRouter', 'VueResource'], function ($, Vue, VueRout
         'router': router,
         data: function() {
             var user = false;
-            var userEmailScript = document.getElementById('user_email');
-            if (userEmailScript) {
-                user = JSON.parse(userEmailScript.textContent);
+            var userJson = document.getElementById('user_json');
+            if (userJson) {
+                user = JSON.parse(userJson.textContent);
             }
             return {
                 'user': user,

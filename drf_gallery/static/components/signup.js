@@ -57,7 +57,7 @@ define(['text!/static/components/signup.html', 'Vue'], function (htmlTemplate, V
             success: function(response) {
                 console.log(response);
                 var router = document.getElementById('app').__vue__;
-                this.$data.user = response.body.email;
+                router.$data.user = response.body;
             },
             error: function(response) {
                 console.log(response);
