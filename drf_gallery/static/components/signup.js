@@ -47,21 +47,23 @@ define(['text!/static/components/signup.html', 'Vue'], function (htmlTemplate, V
             submit: function(event) {
                 console.log(JSON.stringify(this.$data));
                 if (this.validate()) {
-                    var success = function(response) {
-                        console.log(response);
-                    };
-                    var error = function(response) {
-                        console.log(response);
-                        if (response.status === 400) {
-                            var fieldErrors = $.extend(true, {}, this.getInitialFields([]), response.body)
-                            this.$data.errors = fieldErrors;
-                        }
-                    };
                     this.$http.post(
                         '/users/',
                         this.$data.form,
                         {headers: {'X-CSRFToken': csrfToken}}
-                    ).then(success, error);
+                    ).then(this.success, this.error);
+                }
+            },
+            success: function(response) {
+                console.log(response);
+                var router = document.getElementById('app').__vue__;
+                this.$data.user = response.body.email;
+            },
+            error: function(response) {
+                console.log(response);
+                if (response.status === 400) {
+                    var fieldErrors = $.extend(true, {}, this.getInitialFields([]), response.body)
+                    this.$data.errors = fieldErrors;
                 }
             },
         },

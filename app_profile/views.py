@@ -10,7 +10,10 @@ from .serializers import UserSerializer
 class UserViewSetPermission(BasePermission):
 
     def has_permission(self, request, view):
-        return True
+        if request.method == 'POST':
+            return True
+        else:
+            return request.user.is_authenticated
 
 
 def main(request):

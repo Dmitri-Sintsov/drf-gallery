@@ -33,12 +33,22 @@ require(['jquery', 'Vue', 'VueRouter', 'VueResource'], function ($, Vue, VueRout
     var routes = [
         {path: '/', component: Home},
         {path: '/signup', component: loadComponent('/static/components/signup.js')},
-        {path: '/login', component: Login}
+        {path: '/login', component: Login},
     ];
     var router = new VueRouter({
         routes // short for `routes: routes`
     });
     var app = new Vue({
         'router': router,
+        data: function() {
+            var user = false;
+            var userEmailScript = document.getElementById('user_email');
+            if (userEmailScript) {
+                user = JSON.parse(userEmailScript.textContent);
+            }
+            return {
+                'user': user,
+            };
+        },
     }).$mount('#app');
 });

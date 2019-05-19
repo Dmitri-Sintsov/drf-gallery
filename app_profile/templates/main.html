@@ -5,6 +5,7 @@
      xmlns:v-on="http://www.w3.org/1999/xhtml">
         <div id="main_menu">
             <ul>
+                <li v-show="user">Текущий пользователь: <span v-text="user"></span></li>
                 <li><router-link to="/">В начало</router-link></li>
                 <li><router-link to="/signup">Зарегистрироваться</router-link></li>
                 <li><router-link to="/login">Войти</router-link></li>
@@ -18,6 +19,9 @@
 
 {% block footer %}
     {{ block.super }}
+    {% if user.is_authenticated %}
+    {{ user.email|json_script:"user_email" }}
+    {% endif %}
     <script type="text/html" id="home_template">
         <div>Home</div>
     </script>
