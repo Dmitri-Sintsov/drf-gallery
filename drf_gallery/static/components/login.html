@@ -1,0 +1,11 @@
+<div>
+    <div>
+        <div v-for="item in errors.email"><span v-text="item"></span></div>
+        <div><input v-model="form.email" placeholder="Адрес электронной почты"></div>
+    </div>
+    <div>
+        <div v-for="item in errors.password"><span v-text="item"></span></div>
+        <div><input v-model="form.password" type="password" placeholder="Пароль"></div>
+    </div>
+    <div><button v-on:click="submit()">Войти</button></div>
+</div>

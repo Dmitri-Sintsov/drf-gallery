@@ -33,7 +33,7 @@ require(['jquery', 'Vue', 'VueRouter', 'VueResource'], function ($, Vue, VueRout
     var routes = [
         {path: '/', component: Home},
         {path: '/signup', component: loadComponent('/static/components/signup.js')},
-        {path: '/login', component: Login},
+        {path: '/login', component: loadComponent('/static/components/login.js')},
     ];
     var router = new VueRouter({
         routes // short for `routes: routes`
