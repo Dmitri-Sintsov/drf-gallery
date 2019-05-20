@@ -10,6 +10,9 @@ define(['text!/static/components/login.html', 'Vue'], function (htmlTemplate, Vu
             };
         },
         methods: {
+            getRouter: function() {
+                return document.getElementById('app').__vue__;
+            },
             getInitialFields: function(v) {
                 if (v === undefined) {
                     v = '';
@@ -43,8 +46,8 @@ define(['text!/static/components/login.html', 'Vue'], function (htmlTemplate, Vu
             },
             success: function(response) {
                 console.log(response);
-                var router = document.getElementById('app').__vue__;
-                router.$data.user = response.body;
+                var router = this.getRouter();
+                router.$data.globals.user = response.body;
             },
             error: function(response) {
                 console.log(response);

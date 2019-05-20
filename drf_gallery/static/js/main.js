@@ -40,14 +40,15 @@ require(['jquery', 'Vue', 'VueRouter', 'VueResource'], function ($, Vue, VueRout
     });
     var app = new Vue({
         'router': router,
+        methods: {
+            getGlobals: function() {
+                var globalsJson = document.getElementById('globals_json');
+                return globalsJson ? JSON.parse(globalsJson.textContent) : {};
+            },
+        },
         data: function() {
-            var user = false;
-            var userJson = document.getElementById('user_json');
-            if (userJson) {
-                user = JSON.parse(userJson.textContent);
-            }
             return {
-                'user': user,
+                globals: this.getGlobals(),
             };
         },
     }).$mount('#app');

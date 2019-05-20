@@ -7,3 +7,7 @@
     display: table-cell;
     width: 70%;
 }
+
+.router-link-active {
+    font-weight: 800;
+}

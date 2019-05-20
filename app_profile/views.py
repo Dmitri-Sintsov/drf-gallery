@@ -19,9 +19,11 @@ class UserViewSetPermission(BasePermission):
 
 
 def main(request):
-    context = {}
-    if request.user.is_authenticated:
-        context['user_fields'] = model_to_dict(request.user, exclude=['password'])
+    context = {
+        'globals': {
+            'user': model_to_dict(request.user, exclude=['password']) if request.user.is_authenticated else False,
+        }
+    }
     return render(request, 'main.html', context)
 
 
