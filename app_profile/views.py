@@ -37,9 +37,18 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [UserViewSetPermission]
 
+    # See mixin.js
+    view_model = {
+        '_view': {
+            'method': 'setUserInfo',
+            # additional view model args can be defined here
+        }
+    }
+
     def create(self, request, *args, **kwargs):
         result = super().create(request, *args, **kwargs)
         auth_login(request, self.queryset.first())
+        result.data.update(self.view_model)
         return result
 
     @action(detail=False, methods=['post'])
@@ -49,14 +58,19 @@ class UserViewSet(viewsets.ModelViewSet):
             if user.is_active:
                 auth_login(request, user)
                 serializer = self.get_serializer(user)
+                serializer.data.update(self.view_model)
                 return Response(serializer.data)
             else:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={
+                    'email': ['Пользователь не активен'],
+                })
         else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={
+                'email': ['Неверный адрес почты или пароль'],
+            })
 
     @action(detail=False, methods=['post'])
     def logout(self, request):
         if request.user.is_authenticated:
             auth_logout(request)
-        return Response({'user': False})
+        return Response(self.view_model)

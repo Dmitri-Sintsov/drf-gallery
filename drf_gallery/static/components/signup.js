@@ -1,6 +1,7 @@
-define(['text!/static/components/signup.html', 'Vue'], function (htmlTemplate, Vue) {
+define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], function (htmlTemplate, Vue, ViewModelMixin) {
     return Vue.component('signup', {
         template: htmlTemplate,
+        mixins: [ViewModelMixin],
         data: function() {
             return {
                 // Form fields
@@ -10,9 +11,6 @@ define(['text!/static/components/signup.html', 'Vue'], function (htmlTemplate, V
             };
         },
         methods: {
-            getRouter: function() {
-                return document.getElementById('app').__vue__;
-            },
             getInitialFields: function(v) {
                 if (v === undefined) {
                     v = '';
@@ -55,18 +53,6 @@ define(['text!/static/components/signup.html', 'Vue'], function (htmlTemplate, V
                         this.$data.form,
                         {headers: {'X-CSRFToken': csrfToken}}
                     ).then(this.success, this.error);
-                }
-            },
-            success: function(response) {
-                console.log(response);
-                var router = this.getRouter();
-                router.$data.globals.user = response.body;
-            },
-            error: function(response) {
-                console.log(response);
-                if (response.status === 400) {
-                    var fieldErrors = $.extend(true, {}, this.getInitialFields([]), response.body)
-                    this.$data.errors = fieldErrors;
                 }
             },
         },
