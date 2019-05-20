@@ -41,9 +41,28 @@ require(['jquery', 'Vue', 'VueRouter', 'VueResource'], function ($, Vue, VueRout
     var app = new Vue({
         'router': router,
         methods: {
+            getRouter: function() {
+                return document.getElementById('app').__vue__;
+            },
             getGlobals: function() {
                 var globalsJson = document.getElementById('globals_json');
                 return globalsJson ? JSON.parse(globalsJson.textContent) : {};
+            },
+            logout: function() {
+                this.$http.post(
+                    '/users/logout/',
+                    {},
+                    {headers: {'X-CSRFToken': csrfToken}}
+                ).then(this.success, this.error);
+            },
+            success: function(response) {
+                console.log(response);
+                var router = this.getRouter();
+                var globals = $.extend(true, {}, router.$data.globals, response.body)
+                router.$data.globals = globals;
+            },
+            error: function(response) {
+                console.log(response);
             },
         },
         data: function() {

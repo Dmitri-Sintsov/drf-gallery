@@ -37,8 +37,8 @@ define(['text!/static/components/login.html', 'Vue'], function (htmlTemplate, Vu
             submit: function(event) {
                 console.log(JSON.stringify(this.$data));
                 if (this.validate()) {
-                    this.$http.get(
-                        '/users/',
+                    this.$http.post(
+                        '/users/login/',
                         this.$data.form,
                         {headers: {'X-CSRFToken': csrfToken}}
                     ).then(this.success, this.error);

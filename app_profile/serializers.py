@@ -1,6 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
@@ -80,7 +79,4 @@ class UserSerializer(serializers.ModelSerializer):
             birth_country=birth_country,
             **profile_data
         )
-        request = self.context.get('request')
-        if request:
-            auth_login(request, user)
         return user

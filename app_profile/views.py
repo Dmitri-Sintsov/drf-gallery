@@ -1,21 +1,16 @@
 from django.shortcuts import render
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 
 
+from rest_framework.decorators import action
 from rest_framework.permissions import BasePermission
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework import viewsets
 
 from .serializers import UserSerializer
-
-
-class UserViewSetPermission(BasePermission):
-
-    def has_permission(self, request, view):
-        if request.method == 'POST':
-            return True
-        else:
-            return request.user.is_authenticated
 
 
 def main(request):
@@ -27,6 +22,15 @@ def main(request):
     return render(request, 'main.html', context)
 
 
+class UserViewSetPermission(BasePermission):
+
+    def has_permission(self, request, view):
+        if request.method == 'POST':
+            return view.action_map.get('post') in ['create', 'login', 'logout']
+        else:
+            return request.user.is_authenticated
+
+
 class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
@@ -35,4 +39,24 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         result = super().create(request, *args, **kwargs)
+        auth_login(request, self.queryset.first())
         return result
+
+    @action(detail=False, methods=['post'])
+    def login(self, request):
+        user = authenticate(username=request.data.get('email'), password=request.data.get('password'))
+        if user is not None:
+            if user.is_active:
+                auth_login(request, user)
+                serializer = self.get_serializer(user)
+                return Response(serializer.data)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=False, methods=['post'])
+    def logout(self, request):
+        if request.user.is_authenticated:
+            auth_logout(request)
+        return Response({'user': False})
