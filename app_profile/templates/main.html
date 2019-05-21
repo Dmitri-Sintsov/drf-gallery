@@ -5,7 +5,7 @@
      xmlns:v-on="http://www.w3.org/1999/xhtml">
         <div id="main_menu">
             <ul>
-                <li v-show="globals.user">Текущий пользователь: <span v-text="globals.user.email"></span></li>
+                <li v-show="$store.state.user.id">Текущий пользователь: <span v-text="$store.state.user.email"></span></li>
                 <li><router-link to="/">В начало</router-link></li>
                 <li><router-link to="/signup">Зарегистрироваться</router-link></li>
                 <li><router-link to="/login">Войти</router-link></li>
@@ -20,7 +20,7 @@
 
 {% block footer %}
     {{ block.super }}
-    {{ globals|json_script:"globals_json" }}
+    {{ vue_store|json_script:"vue_store_json" }}
     <script type="text/html" id="home_template">
         <div>Home</div>
     </script>

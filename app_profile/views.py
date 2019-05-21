@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
+from django.middleware.csrf import get_token
 
 
 from rest_framework.decorators import action
@@ -15,8 +16,9 @@ from .serializers import UserSerializer
 
 def main(request):
     context = {
-        'globals': {
-            'user': model_to_dict(request.user, exclude=['password']) if request.user.is_authenticated else False,
+        'vue_store': {
+            'user': model_to_dict(request.user, exclude=['password']) if request.user.is_authenticated else {'id': 0},
+            'csrfToken': get_token(request),
         }
     }
     return render(request, 'main.html', context)
@@ -38,17 +40,23 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [UserViewSetPermission]
 
     # See mixin.js
-    view_model = {
-        '_view': {
-            'method': 'setUserInfo',
-            # additional view model args can be defined here
+    def get_view_model(self, request, user_data):
+        return {
+            '_view': [
+                {
+                    'method': 'setState',
+                    'data': {
+                        'user': user_data,
+                        'csrfToken': get_token(request),
+                    }
+                }
+            ],
         }
-    }
 
     def create(self, request, *args, **kwargs):
         result = super().create(request, *args, **kwargs)
         auth_login(request, self.queryset.first())
-        result.data.update(self.view_model)
+        result.data = self.get_view_model(request, result.data)
         return result
 
     @action(detail=False, methods=['post'])
@@ -58,8 +66,9 @@ class UserViewSet(viewsets.ModelViewSet):
             if user.is_active:
                 auth_login(request, user)
                 serializer = self.get_serializer(user)
-                serializer.data.update(self.view_model)
-                return Response(serializer.data)
+                result = Response(serializer.data)
+                result.data = self.get_view_model(request, result.data)
+                return result
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={
                     'email': ['Пользователь не активен'],
@@ -73,4 +82,4 @@ class UserViewSet(viewsets.ModelViewSet):
     def logout(self, request):
         if request.user.is_authenticated:
             auth_logout(request)
-        return Response(self.view_model)
+        return Response(self.get_view_model(request, user_data={'id': 0}))

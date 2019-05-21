@@ -15,8 +15,5 @@
 
 {% block footer %}
     {{ block.super }}
-    <script>
-        var csrfToken = '{{ csrf_token }}';
-    </script>
     <script type="text/javascript" src="{% static 'js/require/require.js' %}" data-main="{% static 'js/main.js' %}"></script>
 {% endblock footer %}

@@ -1,6 +1,7 @@
 define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function (htmlTemplate, Vue, ViewModelMixin) {
     return Vue.component('signup', {
         template: htmlTemplate,
+        store: document.getElementById('app').__vue__.$store,
         mixins: [ViewModelMixin],
         data: function() {
             return {
@@ -33,12 +34,12 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
                 return errors.length === 0;
             },
             submit: function(event) {
-                console.log(JSON.stringify(this.$data));
+                console.log(JSON.stringify(this.$data.form));
                 if (this.validate()) {
                     this.$http.post(
                         '/users/login/',
                         this.$data.form,
-                        {headers: {'X-CSRFToken': csrfToken}}
+                        {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
                     ).then(this.success, this.error);
                 }
             },

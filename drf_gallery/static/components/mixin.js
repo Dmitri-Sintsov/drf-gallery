@@ -4,17 +4,16 @@ define(['Vue'], function (Vue) {
             callViewModel: function(response) {
                 // todo: display alerts for HTTP status codes.
                 if (typeof response.body._view !== 'undefined') {
-                    var viewModel = response.body._view;
+                    var viewModels = response.body._view;
                     delete response.body._view;
-                    var viewMethod = this[viewModel.method];
-                    var result = viewMethod.call(this, viewModel, response.body);
-                    return (result === undefined) ? true : result;
+                    for (var i = 0; i < viewModels.length; i++) {
+                        var viewModel = viewModels[i];
+                        var viewMethod = this[viewModel.method];
+                        viewMethod.call(this, viewModel, response);
+                    }
                 } else {
                     return false;
                 }
-            },
-            getRouter: function() {
-                return document.getElementById('app').__vue__;
             },
             clearErrors: function() {
                 this.$data.errors = this.getInitialFields([]);
@@ -29,14 +28,26 @@ define(['Vue'], function (Vue) {
                 }
                 this.callViewModel(response);
             },
-            // view model
-            setUserInfo: function(viewModel, user) {
-                var router = this.getRouter();
-                if (Object.keys(user).length === 0) {
-                    // Logout was performed.
-                    user = false;
+            setRecursive: function(src, dst) {
+                for (key in src) {
+                    if (src.hasOwnProperty(key)) {
+                        if (typeof src[key] === 'object' && src[key] !== null) {
+                            $.extend(true, dst[key], src[key]);
+                        } else {
+                            dst[key] = src[key];
+                        }
+                    }
                 }
-                router.$data.globals.user = user;
+            },
+            // view model handler
+            setData: function(viewModel, response) {
+                this.setRecursive(viewModel.data, this.$data);
+            },
+            // view model handler
+            setState: function(viewModel, response) {
+                this.$store.commit('user', viewModel.data.user);
+                this.$store.commit('csrfToken', viewModel.data.csrfToken);
+                // this.setRecursive(viewModel.data, this.$store.state);
             },
             success: function(response) {
                 console.log(response);

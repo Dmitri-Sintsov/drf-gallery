@@ -3,29 +3,46 @@ requirejs.config({
         'jquery': '/static/admin/js/vendor/jquery/jquery.min',
         'text': '/static/js/require/text.min',
         'Vue': '/static/js/vue/vue',
+        'Vuex': '/static/js/vue/vuex',
         'VueRouter': '/static/js/vue/vue-router',
         'VueResource': '/static/js/vue/vue-resource',
         'ViewModelMixin': '/static/components/mixin',
     },
 });
 
-function loadComponent(name) {
-    return function (resolve) {
-        var result = require([name], resolve);
-        return result;
-    };
-}
-
 require(
-    ['jquery', 'Vue', 'VueRouter', 'VueResource', 'ViewModelMixin'],
-    function ($, Vue, VueRouter, VueResource, ViewModelMixin) {
+    ['jquery', 'Vue', 'Vuex', 'VueRouter', 'VueResource', 'ViewModelMixin'],
+    function ($, Vue, Vuex, VueRouter, VueResource, ViewModelMixin) {
 
         var DELIMITER_PATCH = { replace: function() { return '^(?!.).' } };
         Vue.mixin({
             delimiters: [DELIMITER_PATCH, DELIMITER_PATCH]
         });
+        Vue.use(Vuex);
         Vue.use(VueRouter);
         Vue.use(VueResource);
+
+        function loadComponent(name) {
+            return function (resolve) {
+                var result = require([name], resolve);
+                return result;
+            };
+        };
+        function getInitialState() {
+            var vueStoreJson = document.getElementById('vue_store_json');
+            return vueStoreJson ? JSON.parse(vueStoreJson.textContent) : {};
+        };
+        var store = new Vuex.Store({
+            state: getInitialState(),
+            mutations: {
+                user: function(state, user) {
+                    Vue.set(state, 'user', user);
+                },
+                csrfToken: function(state, csrfToken) {
+                    Vue.set(state, 'csrfToken', csrfToken);
+                },
+            },
+        });
 
         var Home = {
             template: '#home_template'
@@ -42,25 +59,17 @@ require(
             routes // short for `routes: routes`
         });
         var app = new Vue({
-            'router': router,
+            router,
+            store,
             mixins: [ViewModelMixin],
             methods: {
-                getGlobals: function() {
-                    var globalsJson = document.getElementById('globals_json');
-                    return globalsJson ? JSON.parse(globalsJson.textContent) : {};
-                },
                 logout: function() {
                     this.$http.post(
                         '/users/logout/',
                         {},
-                        {headers: {'X-CSRFToken': csrfToken}}
+                        {headers: {'X-CSRFToken': store.state.csrfToken}}
                     ).then(this.success, this.error);
                 },
-            },
-            data: function() {
-                return {
-                    globals: this.getGlobals(),
-                };
             },
         }).$mount('#app');
     }
