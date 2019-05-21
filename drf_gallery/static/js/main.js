@@ -47,9 +47,6 @@ require(
         var Home = {
             template: '#home_template'
         };
-        var Login = {
-            template: '#login_template'
-        };
         var routes = [
             {path: '/', component: Home},
             {path: '/signup', component: loadComponent('/static/components/signup.js')},

@@ -5,11 +5,10 @@
      xmlns:v-on="http://www.w3.org/1999/xhtml">
         <div id="main_menu">
             <ul>
-                <li v-show="$store.state.user.id">Текущий пользователь: <span v-text="$store.state.user.email"></span></li>
                 <li><router-link to="/">В начало</router-link></li>
-                <li><router-link to="/signup">Зарегистрироваться</router-link></li>
-                <li><router-link to="/login">Войти</router-link></li>
-                <li><router-link to="/logout"><span v-on:click="logout()">Выйти</span></li>
+                <li v-show="!$store.state.user.id"><router-link to="/signup">Зарегистрироваться</router-link></li>
+                <li v-show="!$store.state.user.id"><router-link to="/login">Войти</router-link></li>
+                <li v-show="$store.state.user.id"><router-link to="/logout"><span v-on:click="logout()">Выйти</span></li>
             </ul>
         </div>
         <div id="content">
@@ -22,9 +21,6 @@
     {{ block.super }}
     {{ vue_store|json_script:"vue_store_json" }}
     <script type="text/html" id="home_template">
-        <div>Home</div>
-    </script>
-    <script type="text/html" id="login_template">
-        <div>Login</div>
+        <div v-show="$store.state.user.id">Текущий пользователь: <span v-text="$store.state.user.email"></span></div>
     </script>
 {% endblock footer %}
