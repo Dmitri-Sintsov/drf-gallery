@@ -49,6 +49,10 @@ class UserViewSet(viewsets.ModelViewSet):
                         'user': user_data,
                         'csrfToken': get_token(request),
                     }
+                },
+                {
+                    'method': 'pushRoute',
+                    'route': '/',
                 }
             ],
         }

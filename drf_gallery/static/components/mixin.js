@@ -28,26 +28,32 @@ define(['Vue'], function (Vue) {
                 }
                 this.callViewModel(response);
             },
-            setRecursive: function(src, dst) {
+            setRecursive: function(src) {
                 for (key in src) {
                     if (src.hasOwnProperty(key)) {
-                        if (typeof src[key] === 'object' && src[key] !== null) {
-                            $.extend(true, dst[key], src[key]);
+                        if (typeof this.$data[key] === 'undefined') {
+                            Vue.set(this.$data, key, src[key]);
                         } else {
-                            dst[key] = src[key];
+                            this.$data[key] = src[key];
                         }
                     }
                 }
             },
             // view model handler
+            pushRoute: function(viewModel, response) {
+                this.$router.push(viewModel.route);
+            },
+            // view model handler
             setData: function(viewModel, response) {
-                this.setRecursive(viewModel.data, this.$data);
+                this.setRecursive(viewModel.data);
             },
             // view model handler
             setState: function(viewModel, response) {
-                this.$store.commit('user', viewModel.data.user);
-                this.$store.commit('csrfToken', viewModel.data.csrfToken);
-                // this.setRecursive(viewModel.data, this.$store.state);
+                for (key in viewModel.data) {
+                    if (viewModel.data.hasOwnProperty(key)) {
+                        this.$store.commit(key, viewModel.data[key]);
+                    }
+                }
             },
             success: function(response) {
                 console.log(response);
