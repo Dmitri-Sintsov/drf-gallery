@@ -21,9 +21,8 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
                     password: v,
                 };
             },
-            validate: function() {
-                var errors = [];
-                var form = this.$data.form;
+            validate: function(form) {
+                var errors = {};
                 if (form.email === '') {
                     errors.email = ['email не должен быть пустым']
                 }
@@ -31,17 +30,7 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
                     errors.password = ['Пароль не должен быть пустым'];
                 }
                 Vue.set(this.$data, 'errors', errors);
-                return errors.length === 0;
-            },
-            submit: function(event) {
-                console.log(JSON.stringify(this.$data.form));
-                if (this.validate()) {
-                    this.$http.post(
-                        '/users/login/',
-                        this.$data.form,
-                        {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
-                    ).then(this.success, this.error);
-                }
+                return Object.keys(errors).length === 0;
             },
         },
     });

@@ -46,16 +46,6 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                 Vue.set(this.$data.errors, 'password2', errors);
                 return errors.length === 0;
             },
-            submit: function(event) {
-                console.log(JSON.stringify(this.$data.form));
-                if (this.validate()) {
-                    this.$http.post(
-                        '/users/',
-                        this.$data.form,
-                        {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
-                    ).then(this.success, this.error);
-                }
-            },
         },
     });
 });

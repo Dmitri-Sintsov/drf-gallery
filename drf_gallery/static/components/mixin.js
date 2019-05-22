@@ -55,6 +55,22 @@ define(['Vue'], function (Vue) {
                     }
                 }
             },
+            validate: function(data) {
+                console.log(JSON.stringify(data));
+                return true;
+            },
+            submit: function(method, url, data, event) {
+                if (this.validate(data)) {
+                    this.$http[method](
+                        url,
+                        data,
+                        {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
+                    ).then(this.success, this.error);
+                }
+            },
+            post: function(url, data, event) {
+                this.submit('post', url, data, event);
+            },
             success: function(response) {
                 console.log(response);
                 if (typeof this.$data.errors !== 'undefined') {

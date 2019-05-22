@@ -35,5 +35,5 @@
         <div v-for="item in errors.profile.birth_country.title"><span v-text="item"></span></div>
         <div><input v-model="form.profile.birth_country.title" placeholder="Страна рождения"></div>
     </div>
-    <div><button v-on:click="submit()">Зарегистрироваться</button></div>
+    <div><button v-on:click="post('/users/', form)">Зарегистрироваться</button></div>
 </div>
