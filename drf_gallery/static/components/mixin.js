@@ -1,7 +1,7 @@
 define(['Vue'], function (Vue) {
     return {
         methods: {
-            callViewModel: function(response) {
+            callViewModels: function(response) {
                 // todo: display alerts for HTTP status codes.
                 if (typeof response.body._view !== 'undefined') {
                     var viewModels = response.body._view;
@@ -9,10 +9,8 @@ define(['Vue'], function (Vue) {
                     for (var i = 0; i < viewModels.length; i++) {
                         var viewModel = viewModels[i];
                         var viewMethod = this[viewModel.method];
-                        viewMethod.call(this, viewModel, response);
+                        viewMethod.call(this, viewModel.data);
                     }
-                } else {
-                    return false;
                 }
             },
             clearErrors: function() {
@@ -26,32 +24,29 @@ define(['Vue'], function (Vue) {
                 } else {
                     console.log(response);
                 }
-                this.callViewModel(response);
+                this.callViewModels(response);
             },
-            setRecursive: function(src) {
-                for (key in src) {
-                    if (src.hasOwnProperty(key)) {
+            // view model handler
+            pushRoute: function(route) {
+                this.$router.push(route);
+            },
+            // view model handler
+            setData: function(data) {
+                for (key in data) {
+                    if (data.hasOwnProperty(key)) {
                         if (typeof this.$data[key] === 'undefined') {
-                            Vue.set(this.$data, key, src[key]);
+                            Vue.set(this.$data, key, data[key]);
                         } else {
-                            this.$data[key] = src[key];
+                            this.$data[key] = data[key];
                         }
                     }
                 }
             },
             // view model handler
-            pushRoute: function(viewModel, response) {
-                this.$router.push(viewModel.route);
-            },
-            // view model handler
-            setData: function(viewModel, response) {
-                this.setRecursive(viewModel.data);
-            },
-            // view model handler
-            setState: function(viewModel, response) {
-                for (key in viewModel.data) {
-                    if (viewModel.data.hasOwnProperty(key)) {
-                        this.$store.commit(key, viewModel.data[key]);
+            setState: function(data) {
+                for (key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        this.$store.commit(key, data[key]);
                     }
                 }
             },
@@ -59,7 +54,7 @@ define(['Vue'], function (Vue) {
                 console.log(JSON.stringify(data));
                 return true;
             },
-            submit: function(method, url, data, event) {
+            submit: function(method, url, data, $event) {
                 if (this.validate(data)) {
                     this.$http[method](
                         url,
@@ -68,8 +63,8 @@ define(['Vue'], function (Vue) {
                     ).then(this.success, this.error);
                 }
             },
-            post: function(url, data, event) {
-                this.submit('post', url, data, event);
+            post: function(url, data, $event) {
+                this.submit('post', url, data, $event);
             },
             success: function(response) {
                 console.log(response);
@@ -77,7 +72,7 @@ define(['Vue'], function (Vue) {
                     // Clear form errors, if any.
                     this.clearErrors();
                 }
-                this.callViewModel(response);
+                this.callViewModels(response);
             },
         },
     };

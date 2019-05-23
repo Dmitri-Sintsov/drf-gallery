@@ -52,7 +52,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 },
                 {
                     'method': 'pushRoute',
-                    'route': '/',
+                    'data': '/',
                 }
             ],
         }
