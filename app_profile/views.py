@@ -8,10 +8,12 @@ from django.middleware.csrf import get_token
 from rest_framework.decorators import action
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
+from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 
-from .serializers import UserSerializer
+from .models import EyeColor
+from .serializers import UserSerializer, EyeColorSerializer
 
 
 def main(request):
@@ -24,7 +26,7 @@ def main(request):
     return render(request, 'main.html', context)
 
 
-class UserViewSetPermission(BasePermission):
+class UserPermission(BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'POST':
@@ -37,7 +39,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [UserViewSetPermission]
+    permission_classes = [UserPermission]
 
     # See mixin.js
     def get_view_model(self, request, user_data):
@@ -87,3 +89,10 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.user.is_authenticated:
             auth_logout(request)
         return Response(self.get_view_model(request, user_data={'id': 0}))
+
+
+class EyeColorViewSet(viewsets.ModelViewSet):
+
+    queryset = EyeColor.objects.all()
+    serializer_class = EyeColorSerializer
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
