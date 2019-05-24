@@ -6,7 +6,7 @@ requirejs.config({
         'Vuex': '/static/js/vue/vuex',
         'VueRouter': '/static/js/vue/vue-router',
         'VueResource': '/static/js/vue/vue-resource',
-        'ViewModelMixin': '/static/components/mixin',
+        'ViewModelMixin': '/static/components/viewmodel-mixin',
     },
 });
 

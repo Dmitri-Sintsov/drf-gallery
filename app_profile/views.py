@@ -41,7 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [UserPermission]
 
-    # See mixin.js
+    # See viewmodel-mixin.js
     def get_view_model(self, request, user_data):
         return {
             '_view': [
