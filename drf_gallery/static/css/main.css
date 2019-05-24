@@ -1,11 +1,9 @@
 #main_menu {
     display: table-cell;
-    width: 30%;
 }
 
 #content {
     display: table-cell;
-    width: 70%;
 }
 
 .router-link-active {

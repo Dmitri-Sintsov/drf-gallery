@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
-from django.forms.models import model_to_dict
 from django.middleware.csrf import get_token
 
 
@@ -17,9 +16,13 @@ from .serializers import UserSerializer, EyeColorSerializer
 
 
 def main(request):
+    if request.user.is_authenticated:
+        user = UserSerializer(request.user).data
+    else:
+        user = {'id': 0}
     context = {
         'vue_store': {
-            'user': model_to_dict(request.user, exclude=['password']) if request.user.is_authenticated else {'id': 0},
+            'user': user,
             'csrfToken': get_token(request),
         }
     }

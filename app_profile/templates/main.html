@@ -21,6 +21,14 @@
     {{ block.super }}
     {{ vue_store|json_script:"vue_store_json" }}
     <script type="text/html" id="home_template">
-        <div v-show="$store.state.user.id">Текущий пользователь: <span v-text="$store.state.user.email"></span></div>
+        <div v-show="$store.state.user.id">
+            <div>Текущий пользователь: <span v-text="$store.state.user.username"></span></div>
+            <div>Имя: <span v-text="$store.state.user.first_name"></span></div>
+            <div>Фамилия: <span v-text="$store.state.user.last_name"></span></div>
+            <div>Отчество: <span v-text="$store.state.user.profile.patronymic"></span></div>
+            <div>День рождения: <span v-text="$store.state.user.profile.birth_date"></span></div>
+            <div>Цвет глаз: <span v-text="$store.state.user.profile.eye_color.title"></span></div>
+            <div>Страна рождения: <span v-text="$store.state.user.profile.birth_country.title"></span></div>
+        </div>
     </script>
 {% endblock footer %}
