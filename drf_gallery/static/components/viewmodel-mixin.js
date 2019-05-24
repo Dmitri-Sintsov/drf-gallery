@@ -61,7 +61,7 @@ define(['Vue'], function (Vue) {
                 return true;
             },
             submit: function(method, url, data, $event) {
-                if (this.validate(data)) {
+                if (data === undefined || this.validate(data)) {
                     this.$http[method](
                         url,
                         data,
@@ -71,6 +71,9 @@ define(['Vue'], function (Vue) {
             },
             post: function(url, data, $event) {
                 this.submit('post', url, data, $event);
+            },
+            get: function(url, data, $event) {
+                this.submit('get', url, data, $event);
             },
             success: function(response) {
                 console.log(response);

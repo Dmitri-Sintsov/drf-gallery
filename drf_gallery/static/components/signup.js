@@ -7,6 +7,10 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
         mixins: [ViewModelMixin],
         data: function() {
             return {
+                // select options
+                select: {
+                    eye_color: [],
+                },
                 // Form fields
                 form: this.getInitialFields(),
                 // Form errors

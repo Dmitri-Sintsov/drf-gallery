@@ -60,11 +60,12 @@ class UserViewSet(viewsets.ModelViewSet):
             ],
         }
 
-    def create(self, request, *args, **kwargs):
-        result = super().create(request, *args, **kwargs)
+    @action(detail=False, methods=['post'])
+    def register(self, request, *args, **kwargs):
+        response = self.create(request, *args, **kwargs)
         auth_login(request, self.queryset.first())
-        result.data = self.get_view_model(request, result.data)
-        return result
+        response.data = self.get_view_model(request, response.data)
+        return response
 
     @action(detail=False, methods=['post'])
     def login(self, request):
@@ -97,3 +98,19 @@ class EyeColorViewSet(viewsets.ModelViewSet):
     queryset = EyeColor.objects.all()
     serializer_class = EyeColorSerializer
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+
+    @action(detail=False, methods=['get', 'post'])
+    def select_list(self, request, *args, **kwargs):
+        response = self.list(request, *args, **kwargs)
+        response.data = {
+            '_view': [
+                {
+                    'setData': {
+                        'select': {
+                            'eye_color': response.data,
+                        }
+                    }
+                }
+            ]
+        }
+        return response

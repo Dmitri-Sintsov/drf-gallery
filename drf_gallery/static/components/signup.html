@@ -28,12 +28,16 @@
         <div><input v-model="form.password2" type="password" placeholder="Пароль (повторно)"></div>
     </div>
     <div>
-        <div v-for="item in errors.profile.eye_color.title"><span v-text="item"></span></div>
-        <div><input v-model="form.profile.eye_color.title" placeholder="Цвет глаз"></div>
+        <div v-for="item in errors.profile.eye_color.id"><span v-text="item"></span></div>
+        <div>
+            <select v-on:click="get('/eye-colors/select_list/')" v-model="form.profile.eye_color.title" placeholder="Цвет глаз">
+                <option v-for="option in select.eye_color" v-bind:value="option.title" v-text="option.title"></option>
+            </select>
+        </div>
     </div>
     <div>
         <div v-for="item in errors.profile.birth_country.title"><span v-text="item"></span></div>
         <div><input v-model="form.profile.birth_country.title" placeholder="Страна рождения"></div>
     </div>
-    <div><button v-on:click="post('/users/', form)">Зарегистрироваться</button></div>
+    <div><button v-on:click="post('/users/register/', form)">Зарегистрироваться</button></div>
 </div>
