@@ -1,3 +1,5 @@
+'use strict';
+
 define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function (htmlTemplate, Vue, ViewModelMixin) {
     return Vue.component('signup', {
         template: htmlTemplate,

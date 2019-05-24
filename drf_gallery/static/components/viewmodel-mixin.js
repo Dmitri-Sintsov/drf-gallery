@@ -1,3 +1,5 @@
+'use strict';
+
 define(['Vue'], function (Vue) {
     return {
         methods: {
@@ -8,8 +10,12 @@ define(['Vue'], function (Vue) {
                     delete response.body._view;
                     for (var i = 0; i < viewModels.length; i++) {
                         var viewModel = viewModels[i];
-                        var viewMethod = this[viewModel.method];
-                        viewMethod.call(this, viewModel.data);
+                        for (var methodName in viewModel) {
+                            if (viewModel.hasOwnProperty(methodName)) {
+                                var viewMethod = this[methodName];
+                                viewMethod.call(this, viewModel[methodName]);
+                            }
+                        }
                     }
                 }
             },
@@ -32,7 +38,7 @@ define(['Vue'], function (Vue) {
             },
             // view model handler
             setData: function(data) {
-                for (key in data) {
+                for (var key in data) {
                     if (data.hasOwnProperty(key)) {
                         if (typeof this.$data[key] === 'undefined') {
                             Vue.set(this.$data, key, data[key]);
@@ -44,7 +50,7 @@ define(['Vue'], function (Vue) {
             },
             // view model handler
             setState: function(data) {
-                for (key in data) {
+                for (var key in data) {
                     if (data.hasOwnProperty(key)) {
                         this.$store.commit(key, data[key]);
                     }

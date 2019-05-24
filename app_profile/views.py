@@ -49,15 +49,13 @@ class UserViewSet(viewsets.ModelViewSet):
         return {
             '_view': [
                 {
-                    'method': 'setState',
-                    'data': {
+                    'setState': {
                         'user': user_data,
                         'csrfToken': get_token(request),
                     }
                 },
                 {
-                    'method': 'pushRoute',
-                    'data': '/',
+                    'pushRoute': '/',
                 }
             ],
         }
