@@ -21,7 +21,7 @@
     {{ block.super }}
     {{ vue_store|json_script:"vue_store_json" }}
     <script type="text/html" id="home_template">
-        <div v-show="$store.state.user.id">
+        <div v-if="$store.state.user.id">
             <div>Текущий пользователь: <span v-text="$store.state.user.username"></span></div>
             <div>Имя: <span v-text="$store.state.user.first_name"></span></div>
             <div>Фамилия: <span v-text="$store.state.user.last_name"></span></div>

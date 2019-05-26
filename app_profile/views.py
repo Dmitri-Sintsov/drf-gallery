@@ -33,7 +33,7 @@ class UserPermission(BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'POST':
-            return view.action_map.get('post') in ['create', 'login', 'logout']
+            return view.action_map.get('post') in ['register', 'login', 'logout']
         else:
             return request.user.is_authenticated
 
