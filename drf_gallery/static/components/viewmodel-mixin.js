@@ -84,7 +84,8 @@ define(['Vue'], function (Vue) {
              */
             submit: function(method, url, data, $event) {
                 if (data === undefined || this.validate(data)) {
-                    this.$http[method](
+                    // return chained Promise.
+                    return this.$http[method](
                         url,
                         data,
                         {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
@@ -99,28 +100,19 @@ define(['Vue'], function (Vue) {
                 }
             },
             get: function(url, data, $event) {
-                this.submit('get', url, data, $event);
-            },
-            getOnce: function(url, data, $event) {
-                if (typeof this.getOnceUrls === 'undefined') {
-                    this.getOnceUrls = {};
-                }
-                if (typeof this.getOnceUrls[url] === 'undefined') {
-                    this.getOnceUrls[url] = true;
-                    this.submit('get', url, data, $event);
-                }
+                return this.submit('get', url, data, $event);
             },
             post: function(url, data, $event) {
-                this.submit('post', url, data, $event);
+                return this.submit('post', url, data, $event);
             },
             put: function(url, data, $event) {
-                this.submit('put', url, data, $event);
+                return this.submit('put', url, data, $event);
             },
             patch: function(url, data, $event) {
-                this.submit('patch', url, data, $event);
+                return this.submit('patch', url, data, $event);
             },
             delete: function(url, data, $event) {
-                this.submit('delete', url, data, $event);
+                return this.submit('delete', url, data, $event);
             },
             success: function(response, data) {
                 console.log(response);

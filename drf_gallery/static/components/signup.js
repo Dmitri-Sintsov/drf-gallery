@@ -18,6 +18,11 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                 errors: this.getInitialFields([]),
             };
         },
+        created: function() {
+            this.get('/eye-colors/select_list/').then(function() {
+                this.get('/birth-countries/select_list/');
+            });
+        },
         methods: {
             getInitialFields: function(v) {
                 if (v === undefined) {

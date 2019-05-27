@@ -30,7 +30,7 @@
     <div>
         <div v-for="item in errors.profile.eye_color.title"><span v-text="item"></span></div>
         <div>
-            <select v-on:focus="getOnce('/eye-colors/select_list/')" v-model="form.profile.eye_color.title" title="Цвет глаз">
+            <select v-model="form.profile.eye_color.title" title="Цвет глаз">
                 <option v-for="option in select.eye_color" v-bind:value="option.title" v-text="option.title"></option>
             </select>
         </div>
@@ -38,7 +38,7 @@
     <div>
         <div v-for="item in errors.profile.birth_country.title"><span v-text="item"></span></div>
         <div>
-            <select v-on:focus="getOnce('/birth-countries/select_list/')" v-model="form.profile.birth_country.title" title="Страна рождения">
+            <select v-model="form.profile.birth_country.title" title="Страна рождения">
                 <option v-for="option in select.birth_country" v-bind:value="option.title" v-text="option.title"></option>
             </select>
         </div>
