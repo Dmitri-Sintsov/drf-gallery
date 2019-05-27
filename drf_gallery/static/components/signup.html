@@ -30,7 +30,7 @@
     <div>
         <div v-for="item in errors.profile.eye_color.id"><span v-text="item"></span></div>
         <div>
-            <select v-on:click="get('/eye-colors/select_list/')" v-model="form.profile.eye_color.title" placeholder="Цвет глаз">
+            <select v-on:focus="get('/eye-colors/select_list/')" v-model="form.profile.eye_color.title" placeholder="Цвет глаз">
                 <option v-for="option in select.eye_color" v-bind:value="option.title" v-text="option.title"></option>
             </select>
         </div>
