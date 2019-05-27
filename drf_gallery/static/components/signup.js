@@ -10,6 +10,7 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                 // select options
                 select: {
                     eye_color: [],
+                    birth_country: [],
                 },
                 // Form fields
                 form: this.getInitialFields(),

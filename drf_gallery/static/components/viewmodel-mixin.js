@@ -35,6 +35,24 @@ define(['Vue'], function (Vue) {
                     }
                 }
             },
+            updateData: function(data, $data) {
+                if ($data === undefined) {
+                    $data = this.$data;
+                }
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        if (typeof $data[key] === 'undefined') {
+                            Vue.set($data, key, data[key]);
+                        } else {
+                            if (typeof $data[key] === 'object' && $data[key] !== null) {
+                                this.updateData(data[key], $data[key]);
+                            } else {
+                                this.$data[key] = data[key];
+                            }
+                        }
+                    }
+                }
+            },
             // view model handler
             setState: function(data) {
                 for (var key in data) {
@@ -82,6 +100,15 @@ define(['Vue'], function (Vue) {
             },
             get: function(url, data, $event) {
                 this.submit('get', url, data, $event);
+            },
+            getOnce: function(url, data, $event) {
+                if (typeof this.getOnceUrls === 'undefined') {
+                    this.getOnceUrls = {};
+                }
+                if (typeof this.getOnceUrls[url] === 'undefined') {
+                    this.getOnceUrls[url] = true;
+                    this.submit('get', url, data, $event);
+                }
             },
             post: function(url, data, $event) {
                 this.submit('post', url, data, $event);

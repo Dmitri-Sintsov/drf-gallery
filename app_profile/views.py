@@ -11,8 +11,10 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 
-from .models import EyeColor
-from .serializers import UserSerializer, EyeColorSerializer
+from drf_gallery.mixins import SelectListMixin
+
+from .models import EyeColor, BirthCountry
+from .serializers import UserSerializer, EyeColorSerializer, BirthCountrySerializer
 
 
 def main(request):
@@ -93,24 +95,17 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(self.get_view_model(request, user_data={'id': 0}))
 
 
-class EyeColorViewSet(viewsets.ModelViewSet):
+class EyeColorViewSet(viewsets.ModelViewSet, SelectListMixin):
 
     queryset = EyeColor.objects.all()
     serializer_class = EyeColorSerializer
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+    select_key = 'eye_color'
 
-    @action(detail=False, methods=['get', 'post'])
-    def select_list(self, request, *args, **kwargs):
-        response = self.list(request, *args, **kwargs)
-        response.data = {
-            '_view': [
-                {
-                    'setData': {
-                        'select': {
-                            'eye_color': response.data,
-                        }
-                    }
-                }
-            ]
-        }
-        return response
+
+class BirthCountryViewSet(viewsets.ModelViewSet, SelectListMixin):
+
+    queryset = BirthCountry.objects.all()
+    serializer_class = BirthCountrySerializer
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+    select_key = 'birth_country'

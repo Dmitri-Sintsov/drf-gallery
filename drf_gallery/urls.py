@@ -19,7 +19,7 @@ from django.urls import path
 
 from rest_framework.routers import DefaultRouter
 
-from app_profile.views import main, UserViewSet, EyeColorViewSet
+from app_profile.views import main, UserViewSet, EyeColorViewSet, BirthCountryViewSet
 
 
 urlpatterns = [
@@ -30,6 +30,7 @@ urlpatterns = [
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'eye-colors', EyeColorViewSet, basename='eye_color')
+router.register(r'birth-countries', BirthCountryViewSet, basename='birth_country')
 urlpatterns += router.urls
 
 if settings.DEBUG:
