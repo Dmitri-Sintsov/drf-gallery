@@ -30,12 +30,11 @@ require(
                 return result;
             };
         };
-        function getInitialState() {
-            var vueStoreJson = document.getElementById('vue_store_json');
-            return vueStoreJson ? JSON.parse(vueStoreJson.textContent) : {};
-        };
         var store = new Vuex.Store({
-            state: getInitialState(),
+            state: function () {
+                var vueStoreJson = document.getElementById('vue_store_json');
+                return vueStoreJson ? JSON.parse(vueStoreJson.textContent) : {};
+            },
             mutations: {
                 user: function(state, user) {
                     Vue.set(state, 'user', user);
