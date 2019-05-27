@@ -6,9 +6,9 @@
         <div id="main_menu">
             <ul>
                 <li><router-link to="/">В начало</router-link></li>
-                <li v-show="!$store.state.user.id"><router-link to="/signup">Зарегистрироваться</router-link></li>
-                <li v-show="!$store.state.user.id"><router-link to="/login">Войти</router-link></li>
-                <li v-show="$store.state.user.id"><router-link to="/logout"><span v-on:click="logout()">Выйти</span></li>
+                <li v-cloak v-if="!$store.state.user.id"><router-link to="/signup">Зарегистрироваться</router-link></li>
+                <li v-cloak v-if="!$store.state.user.id"><router-link to="/login">Войти</router-link></li>
+                <li v-cloak v-if="$store.state.user.id"><router-link to="/logout"><span v-on:click="logout()">Выйти</span></li>
             </ul>
         </div>
         <div id="content">
