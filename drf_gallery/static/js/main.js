@@ -62,6 +62,10 @@ require(
                 meta: {text: 'Войти', isAnon: true},
             },
             {
+                path: '/albums/:owner_id', name: 'albums', component: loadComponent('/static/components/albums.js'),
+                meta: {text: 'Альбомы', isAnon: false},
+            },
+            {
                 path: '/logout', name: 'logout',
                 meta: {text: 'Выйти', isAnon: false},
             },

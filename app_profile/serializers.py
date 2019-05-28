@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
 
-from drf_gallery.serializers import OptionalValidationSerializer
+from drf_gallery.serializers import OptionalValidationSerializer, DynamicFieldsModelSerializer
 
 from .models import EyeColor, BirthCountry, Profile
 
@@ -42,7 +42,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ['patronymic', 'birth_date', 'eye_color', 'birth_country']
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(DynamicFieldsModelSerializer):
     username = serializers.CharField(required=False)
     email = serializers.EmailField(
         required=True,

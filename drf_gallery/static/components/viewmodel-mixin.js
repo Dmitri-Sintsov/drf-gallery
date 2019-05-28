@@ -92,9 +92,13 @@ define(['Vue'], function (Vue) {
                     ).then(
                         function(response) {
                             this.success(response, data);
+                            // return chained Promise result.
+                            return response;
                         },
                         function(response) {
                             this.error(response, data);
+                            // return chained Promise result.
+                            return response;
                         }
                     );
                 }
