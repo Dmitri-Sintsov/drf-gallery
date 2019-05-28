@@ -73,19 +73,10 @@ require(
             router,
             store,
             mixins: [ViewModelMixin],
-            methods: {
-                logout: function() {
-                    this.$http.post(
-                        '/users/logout/',
-                        {},
-                        {headers: {'X-CSRFToken': store.state.csrfToken}}
-                    ).then(this.success, this.error);
-                },
-            },
             watch: {
                 '$route': function(to, from) {
                     if (to.name === 'logout') {
-                        this.logout()
+                        this.post('/users/logout/');
                     }
                 },
             }
