@@ -49,12 +49,25 @@ require(
             template: '#home_template'
         };
         var routes = [
-            {path: '/', component: Home},
-            {path: '/signup', component: loadComponent('/static/components/signup.js')},
-            {path: '/login', component: loadComponent('/static/components/login.js')},
+            {
+                path: '/', name: 'home', component: Home,
+                meta: {text: 'В начало',  isAnon: null},
+            },
+            {
+                path: '/signup', name: 'signup', component: loadComponent('/static/components/signup.js'),
+                meta: {text: 'Зарегистрироваться', isAnon: true},
+            },
+            {
+                path: '/login', name: 'login', component: loadComponent('/static/components/login.js'),
+                meta: {text: 'Войти', isAnon: true},
+            },
+            {
+                path: '/logout', name: 'logout',
+                meta: {text: 'Выйти', isAnon: false},
+            },
         ];
         var router = new VueRouter({
-            routes // short for `routes: routes`
+            routes, // short for `routes: routes`
         });
         var app = new Vue({
             router,
@@ -69,6 +82,13 @@ require(
                     ).then(this.success, this.error);
                 },
             },
+            watch: {
+                '$route': function(to, from) {
+                    if (to.name === 'logout') {
+                        this.logout()
+                    }
+                },
+            }
         }).$mount('#app');
     }
 );

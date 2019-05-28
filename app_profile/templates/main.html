@@ -5,10 +5,10 @@
      xmlns:v-on="http://www.w3.org/1999/xhtml">
         <div id="main_menu">
             <ul>
-                <li><router-link to="/">В начало</router-link></li>
-                <li v-cloak v-if="!$store.state.user.id"><router-link to="/signup">Зарегистрироваться</router-link></li>
-                <li v-cloak v-if="!$store.state.user.id"><router-link to="/login">Войти</router-link></li>
-                <li v-cloak v-if="$store.state.user.id"><router-link to="/logout"><span v-on:click="logout()">Выйти</span></li>
+                <router-link v-for="route in $router.options.routes" tag="li" :to="route.path" :key="route.name"
+                             v-if="route.meta.isAnon == null || (route.meta.isAnon == ($store.state.user.id == 0))">
+                    <a v-text="route.meta.text"></a>
+                </router-link>
             </ul>
         </div>
         <div id="content">
