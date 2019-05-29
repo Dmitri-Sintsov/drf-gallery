@@ -1,19 +1,16 @@
-{% extends "admin:admin/base.html" %}
+{% extends "rest_framework:rest_framework/base.html" %}
 {% load static %}
 
-{% block extrastyle %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}">
-{% endblock %}
-
-{% block breadcrumbs %}
+{% block style %}
     {{ block.super }}
-{% endblock breadcrumbs %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}">
+{% endblock style %}
 
 {% block content %}
     {{ block.super }}
 {% endblock content %}
 
-{% block footer %}
+{% block script %}
     {{ block.super }}
     <script type="text/javascript" src="{% static 'js/require/require.js' %}" data-main="{% static 'js/main.js' %}"></script>
-{% endblock footer %}
+{% endblock script %}

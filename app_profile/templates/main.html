@@ -1,34 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div id="app" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml"
-     xmlns:v-on="http://www.w3.org/1999/xhtml">
-        <div id="main_menu">
-            <ul>
-                <router-link v-for="route in $router.options.routes" tag="li" :to="route.path" :key="route.name"
+<div class="container">
+    <div id="app" class="row">
+        <div class="col-md-4">
+            <ul class="nav nav-pills nav-stacked">
+                <router-link v-for="route in $router.options.routes" tag="li" :to="route.path" :key="route.name" exact
                              v-if="route.meta.isAnon == null || (route.meta.isAnon == ($store.state.user.id == 0))">
                     <a v-text="route.meta.text"></a>
                 </router-link>
             </ul>
         </div>
-        <div id="content">
+        <div id="content" class="col-md-8">
             <router-view></router-view>
         </div>
     </div>
+</div>
 {% endblock content %}
 
-{% block footer %}
-    {{ block.super }}
-    {{ vue_store|json_script:"vue_store_json" }}
-    <script type="text/html" id="home_template">
-        <div v-if="$store.state.user.id">
-            <div>Текущий пользователь: <span v-text="$store.state.user.username"></span></div>
-            <div>Имя: <span v-text="$store.state.user.first_name"></span></div>
-            <div>Фамилия: <span v-text="$store.state.user.last_name"></span></div>
-            <div>Отчество: <span v-text="$store.state.user.profile.patronymic"></span></div>
-            <div>День рождения: <span v-text="$store.state.user.profile.birth_date"></span></div>
-            <div>Цвет глаз: <span v-text="$store.state.user.profile.eye_color.title"></span></div>
-            <div>Страна рождения: <span v-text="$store.state.user.profile.birth_country.title"></span></div>
-        </div>
-    </script>
-{% endblock footer %}
+{% block script %}
+{{ block.super }}
+{{ vue_store|json_script:"vue_store_json" }}
+<script type="text/html" id="home_template">
+    <table class="table" v-if="$store.state.user.id">
+        <tr>
+            <th class="col-md-4">Текущий пользователь</th>
+            <td v-text="$store.state.user.username"></td>
+        </tr>
+        <tr>
+            <th class="col-md-4">Имя</th>
+            <td v-text="$store.state.user.first_name"></td>
+        </tr>
+        <tr>
+            <th class="col-md-4">Фамилия</th>
+            <td v-text="$store.state.user.last_name"></td>
+        </tr>
+        <tr>
+            <th class="col-md-4">Отчество</th>
+            <td v-text="$store.state.user.profile.patronymic"></td>
+        </tr>
+        <tr>
+            <th class="col-md-4">День рождения</th>
+            <td v-text="$store.state.user.profile.birth_date"></td>
+        </tr>
+        <tr>
+            <th class="col-md-4">Цвет глаз</th>
+            <td v-text="$store.state.user.profile.eye_color.title"></td>
+        </tr>
+        <tr>
+            <th class="col-md-4">Страна рождения</th>
+            <td v-text="$store.state.user.profile.birth_country.title"></td>
+        </tr>
+    </table>
+</script>
+{% endblock script %}

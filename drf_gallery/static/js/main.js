@@ -71,7 +71,9 @@ require(
             },
         ];
         var router = new VueRouter({
-            routes, // short for `routes: routes`
+            'routes': routes, // short for `routes: routes`
+            linkActiveClass: "active",
+            linkExactActiveClass: "active",
         });
         var app = new Vue({
             router,
