@@ -14,6 +14,7 @@ class AlbumViewSet(viewsets.ModelViewSet):
     serializer_class = AlbumSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+
 class PhotoViewSet(viewsets.ModelViewSet):
 
     queryset = Photo.objects.all()

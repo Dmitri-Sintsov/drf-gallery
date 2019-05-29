@@ -1,5 +1,5 @@
 <div>
-    <ul>
+    <ul v-if="albums.length > 0">
         <li v-for="album in albums">
             <div v-text="album.title"></div>
             <div v-text="album.description"></div>

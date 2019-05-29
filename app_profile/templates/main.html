@@ -5,7 +5,8 @@
     <div id="app" class="row">
         <div class="col-md-4">
             <ul class="nav nav-pills nav-stacked">
-                <router-link v-for="route in $router.options.routes" tag="li" :to="route.path" :key="route.name" exact
+                <router-link v-for="route in $router.options.routes" tag="li"
+                             :to="{name: route.name, params: {owner_id: $store.state.user.id}}" :key="route.name" exact
                              v-if="route.meta.isAnon == null || (route.meta.isAnon == ($store.state.user.id == 0))">
                     <a v-text="route.meta.text"></a>
                 </router-link>
