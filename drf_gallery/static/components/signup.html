@@ -1,75 +1,78 @@
-<form class="form-horizontal" v-on:submit.prevent="post('/users/register/', form)">
-    <div class="form-group">
-        <label class="col-sm-3 control-label">Имя</label>
-        <div class="col-sm-8">
-            <input class="form-control" v-model="form.first_name">
-            <div class="alert alert-warning" v-for="item in errors.first_name"><span v-text="item"></span></div>
+<div>
+    <bs-form :url="'/users/register/'" :form="form" :fields="fields" :select="select" :errors="errors"></bs-form>
+    <form class="form-horizontal" v-on:submit.prevent="post('/users/register/', form)">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Имя</label>
+            <div class="col-sm-8">
+                <input class="form-control" v-model="form.first_name">
+                <div class="alert alert-warning" v-for="item in errors.first_name"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">Фамилия</label>
-        <div class="col-sm-8">
-            <input class="form-control" v-model="form.last_name">
-            <div class="alert alert-warning" v-for="item in errors.last_name"><span v-text="item"></span></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Фамилия</label>
+            <div class="col-sm-8">
+                <input class="form-control" v-model="form.last_name">
+                <div class="alert alert-warning" v-for="item in errors.last_name"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">Отчество</label>
-        <div class="col-sm-8">
-            <input class="form-control" v-model="form.profile.patronymic">
-            <div class="alert alert-warning" v-for="item in errors.profile.patronymic"><span v-text="item"></span></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Отчество</label>
+            <div class="col-sm-8">
+                <input class="form-control" v-model="form.profile.patronymic">
+                <div class="alert alert-warning" v-for="item in errors.profile.patronymic"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">День рождения</label>
-        <div class="col-sm-8">
-            <input class="form-control" v-model="form.profile.birth_date">
-            <div class="alert alert-warning" v-for="item in errors.profile.birth_date"><span v-text="item"></span></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">День рождения</label>
+            <div class="col-sm-8">
+                <input class="form-control" v-model="form.profile.birth_date">
+                <div class="alert alert-warning" v-for="item in errors.profile.birth_date"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">Адрес электронной почты</label>
-        <div class="col-sm-8">
-            <input class="form-control" v-model="form.email">
-            <div class="alert alert-warning" v-for="item in errors.email"><span v-text="item"></span></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Адрес электронной почты</label>
+            <div class="col-sm-8">
+                <input class="form-control" v-model="form.email">
+                <div class="alert alert-warning" v-for="item in errors.email"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">Пароль</label>
-        <div class="col-sm-8">
-            <input class="form-control" v-model="form.password" type="password">
-            <div class="alert alert-warning" v-for="item in errors.password"><span v-text="item"></span></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Пароль</label>
+            <div class="col-sm-8">
+                <input class="form-control" v-model="form.password" type="password">
+                <div class="alert alert-warning" v-for="item in errors.password"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">Пароль (повторно)</label>
-        <div class="col-sm-8">
-            <input class="form-control" v-model="form.password2" type="password">
-            <div class="alert alert-warning" v-for="item in errors.password2"><span v-text="item"></span></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Пароль (повторно)</label>
+            <div class="col-sm-8">
+                <input class="form-control" v-model="form.password2" type="password">
+                <div class="alert alert-warning" v-for="item in errors.password2"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">Цвет глаз</label>
-        <div class="col-sm-8">
-            <select class="form-control" v-model="form.profile.eye_color.title">
-                <option v-for="option in select.eye_color" v-bind:value="option.title" v-text="option.title"></option>
-            </select>
-            <div class="alert alert-warning" v-for="item in errors.profile.eye_color.title"><span v-text="item"></span></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Цвет глаз</label>
+            <div class="col-sm-8">
+                <select class="form-control" v-model="form.profile.eye_color.title">
+                    <option v-for="option in select.eye_color" v-bind:value="option.title" v-text="option.title"></option>
+                </select>
+                <div class="alert alert-warning" v-for="item in errors.profile.eye_color.title"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">Страна рождения</label>
-        <div class="col-sm-8">
-            <select class="form-control" v-model="form.profile.birth_country.title">
-                <option v-for="option in select.birth_country" v-bind:value="option.title" v-text="option.title"></option>
-            </select>
-            <div class="alert alert-warning" v-for="item in errors.profile.birth_country.title"><span v-text="item"></span></div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">Страна рождения</label>
+            <div class="col-sm-8">
+                <select class="form-control" v-model="form.profile.birth_country.title">
+                    <option v-for="option in select.birth_country" v-bind:value="option.title" v-text="option.title"></option>
+                </select>
+                <div class="alert alert-warning" v-for="item in errors.profile.birth_country.title"><span v-text="item"></span></div>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label"></label>
-        <div class="col-sm-8">
-            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        <div class="form-group">
+            <label class="col-sm-3 control-label"></label>
+            <div class="col-sm-8">
+                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>

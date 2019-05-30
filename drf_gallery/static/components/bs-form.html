@@ -1,0 +1,16 @@
+<form class="form-horizontal" v-on:submit.prevent="post(url, form)">
+    <div v-for="field in fields" class="form-group">
+        <label class="col-sm-3 control-label" v-text="field.label"></label>
+        <div class="col-sm-8">
+            <input v-if="field.type == 'text'" class="form-control" v-model="form[field.name]">
+            <input v-else-if="field.type == 'password'" class="form-control" v-model="form[field.name]" type="password">
+            <select v-else-if="field.type == 'select'" class="form-control" v-model="form[field.name]">
+                <option v-for="option in select[field.name]" v-bind:value="option.title" v-text="option.title"></option>
+            </select>
+            <span v-else-if="field.type == 'buttons'">
+                <button v-for="button in field.buttons" v-attr="{type: button.type}" class="btn btn-primary" v-text="button.text"></button>
+            </span>
+            <div class="alert alert-warning" v-for="item in errors[field.name]"><span v-text="item"></span></div>
+        </div>
+    </div>
+</form>

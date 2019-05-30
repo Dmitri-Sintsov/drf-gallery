@@ -12,10 +12,25 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                     eye_color: [],
                     birth_country: [],
                 },
-                // Form fields
-                form: this.getInitialFields(),
+                // Form fields (meta)
+                fields: {
+                    'first_name': {
+                        type: 'text',
+                        label: 'Имя',
+                    },
+                    'last_name': {
+                        type: 'text',
+                        label: 'Фамилия',
+                    },
+                    'profile.patronymic': {
+                        type: 'text',
+                        label: 'Отчество',
+                    }
+                },
+                // Form data
+                form: this.$deepModel(this.getInitialFields()),
                 // Form errors
-                errors: this.getInitialFields([]),
+                errors: this.$deepModel(this.getInitialFields([])),
             };
         },
         created: function() {

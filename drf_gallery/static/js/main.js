@@ -8,13 +8,15 @@ requirejs.config({
         'Vuex': '/static/js/vue/vuex',
         'VueRouter': '/static/js/vue/vue-router',
         'VueResource': '/static/js/vue/vue-resource',
+        'VueDeepSet': '/static/js/vue/vue-deepset',
         'ViewModelMixin': '/static/components/viewmodel-mixin',
+        'BsForm': '/static/components/bs-form',
     },
 });
 
 require(
-    ['jquery', 'Vue', 'Vuex', 'VueRouter', 'VueResource', 'ViewModelMixin'],
-    function ($, Vue, Vuex, VueRouter, VueResource, ViewModelMixin) {
+    ['jquery', 'Vue', 'Vuex', 'VueRouter', 'VueResource', 'VueDeepSet', 'ViewModelMixin', 'BsForm'],
+    function ($, Vue, Vuex, VueRouter, VueResource, VueDeepSet, ViewModelMixin, BsForm) {
 
         var DELIMITER_PATCH = { replace: function() { return '^(?!.).' } };
         Vue.mixin({
@@ -23,6 +25,7 @@ require(
         Vue.use(Vuex);
         Vue.use(VueRouter);
         Vue.use(VueResource);
+        Vue.use(VueDeepSet);
 
         function loadComponent(name) {
             return function (resolve) {
