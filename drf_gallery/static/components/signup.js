@@ -12,33 +12,115 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                     eye_color: [],
                     birth_country: [],
                 },
-                // Form fields (meta)
-                fields: {
-                    'first_name': {
+                /**
+                 * Form fields (meta).
+                 * The order is important.
+                 */
+                fields: [
+                    {
+                        name: 'first_name',
                         type: 'text',
                         label: 'Имя',
                     },
-                    'last_name': {
+                    {
+                        name: 'last_name',
                         type: 'text',
                         label: 'Фамилия',
                     },
-                    'profile.patronymic': {
+                    {
+                        name: 'profile.patronymic',
                         type: 'text',
                         label: 'Отчество',
+                    },
+                    {
+                        name: 'profile.birth_date',
+                        type: 'text',
+                        label: 'День рождения',
+                    },
+                    {
+                        name: 'email',
+                        type: 'text',
+                        label: 'Адрес электронной почты',
+                    },
+                    {
+                        name: 'password',
+                        type: 'password',
+                        label: 'Пароль',
+                    },
+                    {
+                        name: 'password2',
+                        type: 'password',
+                        label: 'Пароль (повторно)',
+                    },
+                    {
+                        name: 'profile.eye_color.title',
+                        type: 'select',
+                        label: 'Цвет глаз',
+                        options: [],
+                    },
+                    {
+                        name: 'profile.birth_country.title',
+                        type: 'select',
+                        label: 'Страна рождения',
+                        options: [],
+                    },
+                    {
+                        type: 'buttons',
+                        buttons: [
+                            {
+                                type: 'submit',
+                                text: 'Зарегистрироваться',
+                            }
+                        ]
                     }
-                },
+                ],
                 // Form data
-                form: this.$deepModel(this.getInitialFields()),
+                form: this.getInitialFields(),
                 // Form errors
-                errors: this.$deepModel(this.getInitialFields([])),
+                errors: this.getInitialFields([]),
             };
         },
         created: function() {
-            this.get('/eye-colors/select_list/').then(function() {
-                this.get('/birth-countries/select_list/');
+            this.get('/eye-colors/').then(function(response) {
+                this.setArrayObjectKey(
+                    this.$data.fields,
+                    {'name': 'profile.eye_color.title'},
+                    {'options': response.body}
+                );
+            });
+            this.get('/birth-countries/').then(function(response) {
+                this.setArrayObjectKey(
+                    this.$data.fields,
+                    {'name': 'profile.birth_country.title'},
+                    {'options': response.body}
+                );
             });
         },
         methods: {
+            setArrayObjectKey: function($data, dataFilter, val) {
+                for (var i = 0; i < $data.length; i++) {
+                    var matchesData = true;
+                    for (var dataKey in dataFilter) {
+                        if (dataFilter.hasOwnProperty(dataKey)) {
+                            if (typeof $data[i][dataKey] === 'undefined' || $data[i][dataKey] !== dataFilter[dataKey]) {
+                                matchesData = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (matchesData) {
+                        if (typeof val === 'object' && val !== null && !(val instanceof Array)) {
+                            for (var objKey in val) {
+                                if (val.hasOwnProperty(objKey)) {
+                                    $data[i][objKey] = val[objKey];
+                                }
+                            }
+                        } else {
+                            $data[i] = val;
+                        }
+                    }
+                }
+            },
             getInitialFields: function(v) {
                 if (v === undefined) {
                     v = '';
@@ -57,8 +139,12 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                         },
                         birth_country: {
                             title: v,
-                        },
+                        }
                     },
+                    'profile.patronymic': v,
+                    'profile.birth_date': v,
+                    'profile.eye_color.title': v,
+                    'profile.birth_country.title': v,
                 };
             },
             validate: function() {

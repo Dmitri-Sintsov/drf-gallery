@@ -11,8 +11,6 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 
-from drf_gallery.mixins import SelectListMixin
-
 from .models import EyeColor, BirthCountry
 from .serializers import UserSerializer, EyeColorSerializer, BirthCountrySerializer
 
@@ -95,17 +93,15 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(self.get_view_model(request, user_data={'id': 0}))
 
 
-class EyeColorViewSet(viewsets.ModelViewSet, SelectListMixin):
+class EyeColorViewSet(viewsets.ModelViewSet):
 
     queryset = EyeColor.objects.all()
     serializer_class = EyeColorSerializer
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
-    select_key = 'eye_color'
 
 
-class BirthCountryViewSet(viewsets.ModelViewSet, SelectListMixin):
+class BirthCountryViewSet(viewsets.ModelViewSet):
 
     queryset = BirthCountry.objects.all()
     serializer_class = BirthCountrySerializer
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
-    select_key = 'birth_country'
