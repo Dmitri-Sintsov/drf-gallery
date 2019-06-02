@@ -4,6 +4,7 @@ requirejs.config({
     paths: {
         'jquery': '/static/admin/js/vendor/jquery/jquery.min',
         'text': '/static/js/require/text.min',
+        'dot': '/static/js/vue/dot-object',
         'Vue': '/static/js/vue/vue',
         'Vuex': '/static/js/vue/vuex',
         'VueRouter': '/static/js/vue/vue-router',

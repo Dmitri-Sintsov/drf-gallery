@@ -1,6 +1,6 @@
 'use strict';
 
-define(['Vue'], function (Vue) {
+define(['Vue', 'dot'], function (Vue, dot) {
     return {
         methods: {
             callViewModels: function(response) {
@@ -61,13 +61,38 @@ define(['Vue'], function (Vue) {
                     }
                 }
             },
+            setArrayObjectKey: function($data, dataFilter, val) {
+                for (var i = 0; i < $data.length; i++) {
+                    var matchesData = true;
+                    for (var dataKey in dataFilter) {
+                        if (dataFilter.hasOwnProperty(dataKey)) {
+                            if (typeof $data[i][dataKey] === 'undefined' || $data[i][dataKey] !== dataFilter[dataKey]) {
+                                matchesData = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (matchesData) {
+                        if (typeof val === 'object' && val !== null && !(val instanceof Array)) {
+                            for (var objKey in val) {
+                                if (val.hasOwnProperty(objKey)) {
+                                    $data[i][objKey] = val[objKey];
+                                }
+                            }
+                        } else {
+                            $data[i] = val;
+                        }
+                    }
+                }
+            },
             clearErrors: function() {
                 this.$data.errors = this.getInitialFields([]);
             },
             error: function(response, data) {
                 if (data !== undefined && response.status === 400 && typeof this.$data.errors !== 'undefined') {
                     // Display form errors bound to view model.
-                    var fieldErrors = $.extend(true, {}, this.getInitialFields([]), response.body)
+                    var dotErrors = dot.dot(response.body);
+                    var fieldErrors = $.extend(true, {}, this.getInitialFields([]), dotErrors)
                     this.$data.errors = fieldErrors;
                 } else {
                     console.log(response);
@@ -84,10 +109,11 @@ define(['Vue'], function (Vue) {
              */
             submit: function(method, url, data, $event) {
                 if (data === undefined || this.validate(data)) {
+                    var nestedData = (data === undefined) ? data : dot.object(data);
                     // return chained Promise.
                     return this.$http[method](
                         url,
-                        data,
+                        nestedData,
                         {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
                     ).then(
                         function(response) {

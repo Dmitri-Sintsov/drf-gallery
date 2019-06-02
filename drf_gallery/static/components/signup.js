@@ -97,30 +97,6 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
             });
         },
         methods: {
-            setArrayObjectKey: function($data, dataFilter, val) {
-                for (var i = 0; i < $data.length; i++) {
-                    var matchesData = true;
-                    for (var dataKey in dataFilter) {
-                        if (dataFilter.hasOwnProperty(dataKey)) {
-                            if (typeof $data[i][dataKey] === 'undefined' || $data[i][dataKey] !== dataFilter[dataKey]) {
-                                matchesData = false;
-                                break;
-                            }
-                        }
-                    }
-                    if (matchesData) {
-                        if (typeof val === 'object' && val !== null && !(val instanceof Array)) {
-                            for (var objKey in val) {
-                                if (val.hasOwnProperty(objKey)) {
-                                    $data[i][objKey] = val[objKey];
-                                }
-                            }
-                        } else {
-                            $data[i] = val;
-                        }
-                    }
-                }
-            },
             getInitialFields: function(v) {
                 if (v === undefined) {
                     v = '';
@@ -131,16 +107,6 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                     email: v,
                     password: v,
                     password2: v,
-                    profile: {
-                        patronymic: v,
-                        birth_date: v,
-                        eye_color: {
-                            title: v,
-                        },
-                        birth_country: {
-                            title: v,
-                        }
-                    },
                     'profile.patronymic': v,
                     'profile.birth_date': v,
                     'profile.eye_color.title': v,
