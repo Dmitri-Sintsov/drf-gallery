@@ -1,5 +1,9 @@
 <div>
-    <bs-form :url="'/users/register/'" :form="form" :fields="fields" :select="select" :errors="errors"></bs-form>
+    <bs-form :url="'/users/register/'" :form="form" :fields="fields" :select="select" :errors="errors">
+        <template v-slot:buttons>
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </template>
+    </bs-form>
     <form class="form-horizontal" v-on:submit.prevent="post('/users/register/', form)">
         <div class="form-group">
             <label class="col-sm-3 control-label">Имя</label>

@@ -64,15 +64,6 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                         label: 'Страна рождения',
                         options: [],
                     },
-                    {
-                        type: 'buttons',
-                        buttons: [
-                            {
-                                type: 'submit',
-                                text: 'Зарегистрироваться',
-                            }
-                        ]
-                    }
                 ],
                 // Form data
                 form: this.getInitialFields(),

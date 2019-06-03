@@ -14,8 +14,8 @@ function (htmlTemplate, dot, Vue, ViewModelMixin) {
             clearErrors: function() {
                 this.$data.errors = this.getInitialFields([]);
             },
-            validate: function() {
-                console.log(JSON.stringify(this.$data));
+            validate: function(data) {
+                console.log(JSON.stringify(data));
                 return true;
             },
             error: function(response, data) {
