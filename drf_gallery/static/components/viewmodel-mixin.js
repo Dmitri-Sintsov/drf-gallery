@@ -1,6 +1,6 @@
 'use strict';
 
-define(['Vue', 'dot'], function (Vue, dot) {
+define(['Vue'], function (Vue) {
     return {
         methods: {
             callViewModels: function(response) {
@@ -85,49 +85,37 @@ define(['Vue', 'dot'], function (Vue, dot) {
                     }
                 }
             },
-            clearErrors: function() {
-                this.$data.errors = this.getInitialFields([]);
-            },
             error: function(response, data) {
-                if (data !== undefined && response.status === 400 && typeof this.$data.errors !== 'undefined') {
-                    // Display form errors bound to view model.
-                    var dotErrors = dot.dot(response.body);
-                    var fieldErrors = $.extend(true, {}, this.getInitialFields([]), dotErrors)
-                    this.$data.errors = fieldErrors;
-                } else {
-                    console.log(response);
+                console.log(response);
+                if (response.status === 400) {
+                    this.callViewModels(response);
                 }
+            },
+            success: function(response, data) {
+                console.log(response);
                 this.callViewModels(response);
             },
-            validate: function(data) {
-                console.log(JSON.stringify(data));
-                return true;
-            },
             /**
-             * Set data = undefined in case the request is not the form submission
-             * thus form validation should be skipped.
+             * Set data = undefined in case the request is not the form submission.
              */
             submit: function(method, url, data, $event) {
-                if (data === undefined || this.validate(data)) {
-                    var nestedData = (data === undefined) ? data : dot.object(data);
-                    // return chained Promise.
-                    return this.$http[method](
-                        url,
-                        nestedData,
-                        {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
-                    ).then(
-                        function(response) {
-                            this.success(response, data);
-                            // return chained Promise result.
-                            return response;
-                        },
-                        function(response) {
-                            this.error(response, data);
-                            // return chained Promise result.
-                            return response;
-                        }
-                    );
-                }
+                // return chained Promise.
+                return this.$http[method](
+                    url,
+                    data,
+                    {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
+                ).then(
+                    function(response) {
+                        this.success(response, data);
+                        // return chained Promise result.
+                        return response;
+                    },
+                    function(response) {
+                        this.error(response, data);
+                        // return chained Promise result.
+                        return response;
+                    }
+                );
             },
             get: function(url, data, $event) {
                 return this.submit('get', url, data, $event);
@@ -141,16 +129,8 @@ define(['Vue', 'dot'], function (Vue, dot) {
             patch: function(url, data, $event) {
                 return this.submit('patch', url, data, $event);
             },
-            delete: function(url, data, $event) {
+            del: function(url, data, $event) {
                 return this.submit('delete', url, data, $event);
-            },
-            success: function(response, data) {
-                console.log(response);
-                if (data !== undefined && typeof this.$data.errors !== 'undefined') {
-                    // Clear form errors, if any.
-                    this.clearErrors();
-                }
-                this.callViewModels(response);
             },
         },
     };
