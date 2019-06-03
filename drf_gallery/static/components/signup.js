@@ -104,16 +104,16 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                     'profile.birth_country.title': v,
                 };
             },
-            validate: function() {
+            validate: function(bsForm) {
                 var errors = [];
-                var form = this.$data.form;
+                var form = bsForm.$props.form;
                 if (form.password !== form.password2) {
                     errors.push('Пароли должны совпадать');
                 } else if (form.password === '') {
                     errors.push('Пароль не должен быть пустым');
                 }
-                Vue.set(this.$data.errors, 'password', errors);
-                Vue.set(this.$data.errors, 'password2', errors);
+                Vue.set(bsForm.$props.errors, 'password', errors);
+                Vue.set(bsForm.$props.errors, 'password2', errors);
                 return errors.length === 0;
             },
         },

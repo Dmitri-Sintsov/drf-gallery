@@ -14,31 +14,33 @@ function (htmlTemplate, dot, Vue, ViewModelMixin) {
             clearErrors: function() {
                 this.$data.errors = this.getInitialFields([]);
             },
-            validate: function(data) {
-                console.log(JSON.stringify(data));
-                return true;
-            },
             error: function(response, data) {
                 if (response.status === 400) {
                     // Display form errors bound to view model.
                     var dotErrors = dot.dot(response.body);
                     var fieldErrors = $.extend(true, {}, this.getInitialFields([]), dotErrors)
                     this.$data.errors = fieldErrors;
-                    this.callViewModels(response);
-                } else {
-                    console.log(response);
                 }
             },
             success: function(response, data) {
-                console.log(response);
                 // Clear form errors, if any.
                 this.clearErrors();
-                this.callViewModels(response);
             },
             submit: function(method, url, data, $event) {
-                if (this.validate(data)) {
+                if (this.$parent.validate(this)) {
                     var nestedData = dot.object(data);
-                    return ViewModelMixin.methods.submit.call(this, method, url, nestedData, $event);
+                    return this.$parent.submit.call(this, method, url, nestedData, $event).then(
+                        function(response) {
+                            this.success(response, data);
+                            // return chained Promise result.
+                            return response;
+                        },
+                        function(response) {
+                            this.error(response, data);
+                            // return chained Promise result.
+                            return response;
+                        }
+                    );
                 }
             },
         }
