@@ -7,6 +7,22 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
         mixins: [ViewModelMixin],
         data: function() {
             return {
+                /**
+                 * Form fields (meta).
+                 * The order is important.
+                 */
+                fields: [
+                    {
+                        name: 'email',
+                        type: 'text',
+                        label: 'Адрес электронной почты',
+                    },
+                    {
+                        name: 'password',
+                        type: 'password',
+                        label: 'Пароль',
+                    },
+                ],
                 // Form fields
                 form: this.getInitialFields(),
                 // Form errors
@@ -23,7 +39,8 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
                     password: v,
                 };
             },
-            validate: function(form) {
+            validate: function(bsForm) {
+                var form = bsForm.$data.form_;
                 var errors = {};
                 if (form.email === '') {
                     errors.email = ['email не должен быть пустым']
@@ -31,7 +48,7 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
                 if (form.password === '') {
                     errors.password = ['Пароль не должен быть пустым'];
                 }
-                Vue.set(this.$data, 'errors', errors);
+                Vue.set(bsForm.$data, 'errors_', errors);
                 return Object.keys(errors).length === 0;
             },
         },

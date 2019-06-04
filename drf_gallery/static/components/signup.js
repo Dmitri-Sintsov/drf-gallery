@@ -7,11 +7,6 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
         mixins: [ViewModelMixin],
         data: function() {
             return {
-                // select options
-                select: {
-                    eye_color: [],
-                    birth_country: [],
-                },
                 /**
                  * Form fields (meta).
                  * The order is important.
