@@ -27,16 +27,16 @@ function (htmlTemplate, dot, Vue, ViewModelMixin) {
                 this.clearErrors();
             },
             submit: function(method, url, data, $event) {
+                var self = this;
                 if (this.$parent.validate(this)) {
                     var nestedData = dot.object(data);
                     return this.$parent.submit.call(this, method, url, nestedData, $event).then(
                         function(response) {
-                            this.success(response, data);
-                            // return chained Promise result.
-                            return response;
-                        },
-                        function(response) {
-                            this.error(response, data);
+                            if (response.status < 300) {
+                                self.success(response, data);
+                            } else {
+                                self.error(response, data);
+                            }
                             // return chained Promise result.
                             return response;
                         }
