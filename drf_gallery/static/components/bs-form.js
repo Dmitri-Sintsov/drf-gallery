@@ -12,14 +12,16 @@ function (htmlTemplate, dot, Vue, ViewModelMixin) {
                 return {};
             },
             clearErrors: function() {
-                this.$data.errors = this.getInitialFields([]);
+                this.$props.errors = this.getInitialFields([]);
             },
             error: function(response, data) {
                 if (response.status === 400) {
                     // Display form errors bound to view model.
+                    dot.keepArray = true;
+                    dot.useArray = false;
                     var dotErrors = dot.dot(response.body);
                     var fieldErrors = $.extend(true, {}, this.getInitialFields([]), dotErrors)
-                    this.$data.errors = fieldErrors;
+                    this.$props.errors = fieldErrors;
                 }
             },
             success: function(response, data) {
@@ -29,6 +31,8 @@ function (htmlTemplate, dot, Vue, ViewModelMixin) {
             submit: function(method, url, data, $event) {
                 var self = this;
                 if (this.$parent.validate(this)) {
+                    dot.keepArray = true;
+                    dot.useArray = false;
                     var nestedData = dot.object(data);
                     return this.$parent.submit.call(this, method, url, nestedData, $event).then(
                         function(response) {
