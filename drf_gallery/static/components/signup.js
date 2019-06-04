@@ -106,14 +106,14 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
             },
             validate: function(bsForm) {
                 var errors = [];
-                var form = bsForm.$props.form;
+                var form = bsForm.$data.form_;
                 if (form.password !== form.password2) {
                     errors.push('Пароли должны совпадать');
                 } else if (form.password === '') {
                     errors.push('Пароль не должен быть пустым');
                 }
-                Vue.set(bsForm.$props.errors, 'password', errors);
-                Vue.set(bsForm.$props.errors, 'password2', errors);
+                Vue.set(bsForm.$data.errors_, 'password', errors);
+                Vue.set(bsForm.$data.errors_, 'password2', errors);
                 return errors.length === 0;
             },
         },
