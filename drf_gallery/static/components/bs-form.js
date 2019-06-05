@@ -1,10 +1,11 @@
 'use strict';
 
 define(
-['text!/static/components/bs-form.html', 'dot', 'Vue', 'ViewModelMixin'],
-function (htmlTemplate, dot, Vue, ViewModelMixin) {
+['text!/static/components/bs-form.html', 'dot', 'luxon', 'Vue', 'Datetime', 'ViewModelMixin'],
+function (htmlTemplate, dot, luxon, Vue, datetime, ViewModelMixin) {
     return Vue.component('bs-form', {
         template: htmlTemplate,
+        components: {'datetime': Datetime},
         mixins: [ViewModelMixin],
         props: ['url', 'form', 'fields', 'errors'],
         data: function() {

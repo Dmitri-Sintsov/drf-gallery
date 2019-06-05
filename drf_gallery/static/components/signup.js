@@ -29,7 +29,8 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                     },
                     {
                         name: 'profile.birth_date',
-                        type: 'text',
+                        type: 'date',
+                        format: 'YYYY-MM-DD',
                         label: 'День рождения',
                     },
                     {
