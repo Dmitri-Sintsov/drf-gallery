@@ -1,4 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "css/vueDatePick.css" %}">
+{% endblock style %}
 
 {% block content %}
 <div class="container">
