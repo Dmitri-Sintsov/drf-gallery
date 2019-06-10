@@ -1,13 +1,13 @@
 'use strict';
 
-define(['Vue'], function (Vue) {
+define(['Vue', 'axios'], function (Vue, axios) {
     return {
         methods: {
             callViewModels: function(response) {
                 // todo: display alerts for HTTP status codes.
-                if (typeof response.body._view !== 'undefined') {
-                    var viewModels = response.body._view;
-                    delete response.body._view;
+                if (typeof response.data._view !== 'undefined') {
+                    var viewModels = response.data._view;
+                    delete response.data._view;
                     for (var i = 0; i < viewModels.length; i++) {
                         var viewModel = viewModels[i];
                         for (var methodName in viewModel) {
@@ -99,21 +99,23 @@ define(['Vue'], function (Vue) {
              * Set data = undefined in case the request is not the form submission.
              */
             submit: function(method, url, data, $event) {
+                var self = this;
                 // return chained Promise.
-                return this.$http[method](
+                return axios[method](
                     url,
                     data,
                     {headers: {'X-CSRFToken': this.$store.state.csrfToken}}
                 ).then(
                     function(response) {
-                        this.success(response, data);
+                        self.success(response, data);
                         // return chained Promise result.
                         return response;
-                    },
-                    function(response) {
-                        this.error(response, data);
+                    }
+                ).catch(
+                    function(error) {
+                        self.error(error.response, data);
                         // return chained Promise result.
-                        return response;
+                        return error.response;
                     }
                 );
             },

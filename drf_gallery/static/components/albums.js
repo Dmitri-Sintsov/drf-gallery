@@ -11,8 +11,9 @@ define(['text!/static/components/albums.html', 'Vue', 'ViewModelMixin'], functio
             };
         },
         created: function() {
-            this.get('/albums/?owner_id=' + parseInt(this.$route.params.owner_id)).then(function(response) {
-                this.albums = response.body;
+            var self = this;
+            this.get('/albums/', {params: {owner_id: this.$route.params.owner_id}}).then(function(response) {
+                self.albums = response.data;
             });
         },
         methods: {

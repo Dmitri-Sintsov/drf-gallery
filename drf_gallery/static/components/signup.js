@@ -68,18 +68,19 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
             };
         },
         created: function() {
+            var self = this;
             this.get('/eye-colors/').then(function(response) {
-                this.setArrayObjectKey(
-                    this.$data.fields,
+                self.setArrayObjectKey(
+                    self.$data.fields,
                     {'name': 'profile.eye_color.title'},
-                    {'options': response.body}
+                    {'options': response.data}
                 );
             });
             this.get('/birth-countries/').then(function(response) {
-                this.setArrayObjectKey(
-                    this.$data.fields,
+                self.setArrayObjectKey(
+                    self.$data.fields,
                     {'name': 'profile.birth_country.title'},
-                    {'options': response.body}
+                    {'options': response.data}
                 );
             });
         },

@@ -8,7 +8,7 @@ requirejs.config({
         'Vue': '/static/js/vue/vue',
         'Vuex': '/static/js/vue/vuex',
         'VueRouter': '/static/js/vue/vue-router',
-        'VueResource': '/static/js/vue/vue-resource',
+        'axios': '/static/js/vue/axios.min',
         'DatePick': '/static/js/vue/vueDatePick',
         'ViewModelMixin': '/static/components/viewmodel-mixin',
         'BsForm': '/static/components/bs-form',
@@ -16,8 +16,8 @@ requirejs.config({
 });
 
 require(
-    ['jquery', 'Vue', 'Vuex', 'VueRouter', 'VueResource', 'ViewModelMixin', 'BsForm'],
-    function ($, Vue, Vuex, VueRouter, VueResource, ViewModelMixin, BsForm) {
+    ['jquery', 'Vue', 'Vuex', 'VueRouter', 'ViewModelMixin', 'BsForm'],
+    function ($, Vue, Vuex, VueRouter, ViewModelMixin, BsForm) {
 
         var DELIMITER_PATCH = { replace: function() { return '^(?!.).' } };
         Vue.mixin({
@@ -25,7 +25,6 @@ require(
         });
         Vue.use(Vuex);
         Vue.use(VueRouter);
-        Vue.use(VueResource);
 
         function loadComponent(name) {
             return function (resolve) {

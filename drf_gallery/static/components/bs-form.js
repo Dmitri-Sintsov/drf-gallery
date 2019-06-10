@@ -27,7 +27,7 @@ function (htmlTemplate, dot, Vue, DatePick, ViewModelMixin) {
                     // Display form errors bound to view model.
                     dot.keepArray = true;
                     dot.useArray = false;
-                    var dotErrors = dot.dot(JSON.parse(JSON.stringify(response.body)));
+                    var dotErrors = dot.dot(JSON.parse(JSON.stringify(response.data)));
                     var fieldErrors = $.extend(true, {}, this.getInitialFields([]), dotErrors)
                     this.$data.errors_ = fieldErrors;
                 }
