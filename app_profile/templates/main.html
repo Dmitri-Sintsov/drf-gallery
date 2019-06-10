@@ -28,7 +28,7 @@
 {% block script %}
 {{ block.super }}
 {{ vue_store|json_script:"vue_store_json" }}
-<script type="text/html" id="home_template">
+<script type="text/x-template" id="home_template">
     <table class="table" v-if="$store.state.user.id">
         <tr>
             <th class="col-md-4">Текущий пользователь</th>

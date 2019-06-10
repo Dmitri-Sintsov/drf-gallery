@@ -2,10 +2,20 @@
 
 define(
 ['text!/static/components/bs-form.html', 'dot', 'Vue', 'DatePick', 'ViewModelMixin'],
-function (htmlTemplate, dot, Vue, DatePick, ViewModelMixin) {
-    return Vue.component('bs-form', {
-        template: htmlTemplate,
+function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
+    document.body.insertAdjacentHTML('beforeend', bsFormTemplate);
+    var bsFields = Vue.component('bs-field', {
+        template: '#bs-field-template',
         components: {'date-pick': DatePick},
+        props: ['def', 'val'],
+        methods: {
+            inputChange: function($event) {
+                this.$emit('input-change', this.$props.def.name, $event.target.value);
+            },
+        }
+    });
+    var bsForm = Vue.component('bs-form', {
+        template: '#bs-form-template',
         mixins: [ViewModelMixin],
         props: ['url', 'form', 'fields', 'errors'],
         data: function() {
@@ -16,11 +26,16 @@ function (htmlTemplate, dot, Vue, DatePick, ViewModelMixin) {
             }));
         },
         methods: {
+            setInput: function(inputName, inputValue) {
+                console.log(inputName);
+                console.log(inputValue);
+                this.$data.form_[inputName] = inputValue;
+            },
             getInitialFields: function(v) {
                 return {};
             },
             clearErrors: function() {
-                this.$data.errors_ = this.getInitialFields([]);
+                this.$props.errors = this.getInitialFields([]);
             },
             error: function(response, data) {
                 if (response.status === 400) {
@@ -29,7 +44,7 @@ function (htmlTemplate, dot, Vue, DatePick, ViewModelMixin) {
                     dot.useArray = false;
                     var dotErrors = dot.dot(JSON.parse(JSON.stringify(response.data)));
                     var fieldErrors = $.extend(true, {}, this.getInitialFields([]), dotErrors)
-                    this.$data.errors_ = fieldErrors;
+                    this.$props.errors = fieldErrors;
                 }
             },
             success: function(response, data) {
