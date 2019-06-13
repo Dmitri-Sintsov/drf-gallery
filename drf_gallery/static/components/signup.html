@@ -1,4 +1,4 @@
-<bs-form :url="'/users/register/'" :form.sync="form" :fields="fields" :errors.sync="errors">
+<bs-form :url="'/users/register/'" :form="form" :fields="fields" :errors="errors" @form-field-change="formFieldChange" @form-errors="setFormErrors">
     <template v-slot:buttons>
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
     </template>

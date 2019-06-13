@@ -1,4 +1,4 @@
-<bs-form :url="'/users/login/'" :form="form" :fields="fields" :errors="errors">
+<bs-form :url="'/users/login/'" :form="form" :fields="fields" :errors="errors" @form-field-change="formFieldChange" @form-errors="setFormErrors">
     <template v-slot:buttons>
         <button type="submit" class="btn btn-info">Войти</button>
     </template>

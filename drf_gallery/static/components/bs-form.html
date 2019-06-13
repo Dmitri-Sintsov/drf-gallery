@@ -1,21 +1,21 @@
 <script type="text/x-template" id="bs-field-template">
     <span>
-        <input v-if="def.type == 'text'" class="form-control" v-on:input="inputChange($event)" v-bind:value="val">
-        <input v-else-if="def.type == 'password'" class="form-control" type="password" v-on:input="inputChange($event)" v-bind:value="val">
-        <date-pick v-if="def.type == 'date'" :pickTime="false" :format="def.format" :inputAttributes="{class: 'form-control'}" v-on:input="inputChange($event)" v-bind:value="val"></date-pick>
-        <select v-else-if="def.type == 'select'" class="form-control" v-on:input="inputChange($event)" v-bind:value="val">
-            <option v-for="option in def.options" v-bind:value="option.title" v-text="option.title"></option>
+        <input v-if="def.type == 'text'" class="form-control" @input="fieldChange($event)" :value="val">
+        <input v-else-if="def.type == 'password'" class="form-control" type="password" @input="fieldChange($event)" :value="val">
+        <date-pick v-if="def.type == 'date'" :pickTime="false" :format="def.format" :inputAttributes="{class: 'form-control'}" @input="fieldChange($event)" :value="val"></date-pick>
+        <select v-else-if="def.type == 'select'" class="form-control" @input="fieldChange($event)" :value="val">
+            <option v-for="option in def.options" :value="option.title" v-text="option.title" :selected="option.title == val"></option>
         </select>
     </span>
 </script>
 
 <script type="text/x-template" id="bs-form-template">
-    <form class="form-horizontal" v-on:submit.prevent="post($props.url, $data.form_)">
+    <form class="form-horizontal" @submit.prevent="post(url, form)">
         <div v-for="(field, key) in $props.fields" class="form-group">
             <label class="col-sm-3 control-label" v-text="field.label"></label>
             <div class="col-sm-8">
-                <bs-field :def="field" :val="$data.form_[field.name]" v-on:input-change="function(name, val) {setInput(name, val)}"></bs-field>
-                <div class="alert alert-warning" v-for="item in $data.errors_[field.name]"><span v-text="item"></span></div>
+                <bs-field :ref="field.name" :def="field" :val="form[field.name]" @field-change="formFieldChange"></bs-field>
+                <div class="alert alert-warning" v-for="item in errors[field.name]"><span v-text="item"></span></div>
             </div>
         </div>
         <div class="form-group">

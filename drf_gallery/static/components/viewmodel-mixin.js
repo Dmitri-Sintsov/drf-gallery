@@ -134,6 +134,14 @@ define(['Vue', 'axios'], function (Vue, axios) {
             del: function(url, data, $event) {
                 return this.submit('delete', url, data, $event);
             },
+            // bs-form component support.
+            formFieldChange: function(inputName, inputValue) {
+                this.form[inputName] = inputValue;
+            },
+            // bs-form component support.
+            setFormErrors: function(formErrors) {
+                this.errors = formErrors;
+            },
         },
     };
 });

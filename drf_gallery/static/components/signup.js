@@ -70,6 +70,9 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
         created: function() {
             var self = this;
             this.get('/eye-colors/').then(function(response) {
+                response.data.unshift({
+                    title: '', description: '',
+                });
                 self.setArrayObjectKey(
                     self.$data.fields,
                     {'name': 'profile.eye_color.title'},
@@ -77,6 +80,9 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                 );
             });
             this.get('/birth-countries/').then(function(response) {
+                response.data.unshift({
+                    title: '', description: '',
+                });
                 self.setArrayObjectKey(
                     self.$data.fields,
                     {'name': 'profile.birth_country.title'},
@@ -101,16 +107,16 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                     'profile.birth_country.title': v,
                 };
             },
-            validate: function(bsForm) {
+            validate: function() {
                 var errors = [];
-                var form = bsForm.$data.form_;
+                var form = this.$data.form;
                 if (form.password !== form.password2) {
                     errors.push('Пароли должны совпадать');
                 } else if (form.password === '') {
                     errors.push('Пароль не должен быть пустым');
                 }
-                Vue.set(bsForm.$data.errors_, 'password', errors);
-                Vue.set(bsForm.$data.errors_, 'password2', errors);
+                Vue.set(this.$data.errors, 'password', errors);
+                Vue.set(this.$data.errors, 'password2', errors);
                 return errors.length === 0;
             },
         },

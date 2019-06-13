@@ -39,8 +39,8 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
                     password: v,
                 };
             },
-            validate: function(bsForm) {
-                var form = bsForm.$data.form_;
+            validate: function() {
+                var form = this.$data.form;
                 var errors = {};
                 if (form.email === '') {
                     errors.email = ['email не должен быть пустым']
@@ -48,7 +48,7 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
                 if (form.password === '') {
                     errors.password = ['Пароль не должен быть пустым'];
                 }
-                Vue.set(bsForm.$data, 'errors_', errors);
+                Vue.set(this.$data, 'errors', errors);
                 return Object.keys(errors).length === 0;
             },
         },

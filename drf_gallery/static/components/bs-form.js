@@ -3,39 +3,34 @@
 define(
 ['text!/static/components/bs-form.html', 'dot', 'Vue', 'DatePick', 'ViewModelMixin'],
 function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
-    document.body.insertAdjacentHTML('beforeend', bsFormTemplate);
-    var bsFields = Vue.component('bs-field', {
+    if (!document.getElementById('bs-form-template')) {
+        document.body.insertAdjacentHTML('beforeend', bsFormTemplate);
+    }
+    var bsField = Vue.component('bs-field', {
         template: '#bs-field-template',
         components: {'date-pick': DatePick},
         props: ['def', 'val'],
         methods: {
-            inputChange: function($event) {
-                this.$emit('input-change', this.$props.def.name, $event.target.value);
+            fieldChange: function($event) {
+                // DatePick returns string $event with selected value.
+                var value = (typeof $event !== 'object') ? $event : $event.target.value;
+                this.$emit('field-change', this.$props.def.name, value);
             },
         }
     });
     var bsForm = Vue.component('bs-form', {
         template: '#bs-form-template',
+        components: {'bs-field': bsField},
         mixins: [ViewModelMixin],
         props: ['url', 'form', 'fields', 'errors'],
-        data: function() {
-            // Modified props.
-            return JSON.parse(JSON.stringify({
-                form_: this.$props.form,
-                errors_: this.$props.errors,
-            }));
-        },
         methods: {
-            setInput: function(inputName, inputValue) {
+            formFieldChange: function(inputName, inputValue) {
                 console.log(inputName);
                 console.log(inputValue);
-                this.$data.form_[inputName] = inputValue;
-            },
-            getInitialFields: function(v) {
-                return {};
+                this.$emit('form-field-change', inputName, inputValue);
             },
             clearErrors: function() {
-                this.$props.errors = this.getInitialFields([]);
+                this.$emit('form-errors', this.$parent.getInitialFields([]));
             },
             error: function(response, data) {
                 if (response.status === 400) {
@@ -43,8 +38,8 @@ function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
                     dot.keepArray = true;
                     dot.useArray = false;
                     var dotErrors = dot.dot(JSON.parse(JSON.stringify(response.data)));
-                    var fieldErrors = $.extend(true, {}, this.getInitialFields([]), dotErrors)
-                    this.$props.errors = fieldErrors;
+                    var fieldErrors = $.extend(true, {}, this.$parent.getInitialFields([]), dotErrors)
+                    this.$emit('form-errors', fieldErrors);
                 }
             },
             success: function(response, data) {
@@ -53,7 +48,7 @@ function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
             },
             submit: function(method, url, data, $event) {
                 var self = this;
-                if (this.$parent.validate(this)) {
+                if (typeof this.$parent.validate === 'function' && this.$parent.validate()) {
                     dot.keepArray = true;
                     dot.useArray = false;
                     var nestedData = dot.object(JSON.parse(JSON.stringify(data)));
