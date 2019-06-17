@@ -11,6 +11,8 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 
+from drf_gallery.serializers import SerializerSerializer
+
 from .models import EyeColor, BirthCountry
 from .serializers import UserSerializer, EyeColorSerializer, BirthCountrySerializer
 
@@ -33,7 +35,7 @@ class UserPermission(BasePermission):
 
     def has_permission(self, request, view):
         if request.method == 'POST':
-            return view.action_map.get('post') in ['register', 'login', 'logout']
+            return view.action_map.get('post') in ['register', 'login', 'logout', 'get_fields']
         else:
             return request.user.is_authenticated
 
@@ -59,6 +61,11 @@ class UserViewSet(viewsets.ModelViewSet):
                 }
             ],
         }
+
+    @action(detail=False, methods=['post'])
+    def get_fields(self, request, *args, **kwargs):
+        response = Response(SerializerSerializer(UserSerializer(), flat=True).data)
+        return response
 
     @action(detail=False, methods=['post'])
     def register(self, request, *args, **kwargs):

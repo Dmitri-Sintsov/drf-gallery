@@ -25,8 +25,8 @@ function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
         props: ['url', 'form', 'fields', 'errors'],
         methods: {
             formFieldChange: function(inputName, inputValue) {
-                console.log(inputName);
-                console.log(inputValue);
+                // console.log(inputName);
+                // console.log(inputValue);
                 this.$emit('form-field-change', inputName, inputValue);
             },
             clearErrors: function() {

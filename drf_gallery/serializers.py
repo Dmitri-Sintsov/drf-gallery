@@ -51,15 +51,20 @@ class SerializerSerializer(serializers.BaseSerializer):
         self.flat = flat
         super().__init__(instance=serializer, data=data)
 
-    def field_to_struct(self, field):
+    def get_field_type(self, field):
         typ = 'text'
         if isinstance(field, drf_fields.DateField):
             typ = 'date'
         elif isinstance(field, drf_fields.DateTimeField):
             typ = 'datetime'
+        elif 'password' in field.field_name:
+            typ = 'password'
+        return typ
+
+    def field_to_struct(self, field, nested_path):
         ret = {
             'label': field.label,
-            'type': typ,
+            'type': self.get_field_type(field),
         }
         return ret
 
@@ -71,13 +76,12 @@ class SerializerSerializer(serializers.BaseSerializer):
             fields = serializer.fields
         ret = []
         for field_name, field in fields.items():
-            if self.flat:
-                if base_path == '':
-                    nested_path = field_name
-                else:
-                    nested_path = base_path + '.' + field_name
+            if self.read_only is not None and field.read_only != self.read_only:
+                continue
+            if base_path == '':
+                nested_path = field_name
             else:
-                nested_path = ''
+                nested_path = base_path + '.' + field_name
             if hasattr(field, 'fields'):
                 field_data = self.serializer_to_struct(field, nested_path)
             elif hasattr(field, 'child'):
@@ -85,16 +89,16 @@ class SerializerSerializer(serializers.BaseSerializer):
                 if hasattr(child, 'fields'):
                     field_data = self.serializer_to_struct(serializer, nested_path, force_many=child)
                 else:
-                    field_data = self.field_to_struct(field)
+                    field_data = self.field_to_struct(field, nested_path)
             elif hasattr(field, 'child_relation'):
                 field_data = self.serializer_to_struct(field.child_relation, nested_path, force_many=field.child_relation)
             else:
-                field_data = self.field_to_struct(field)
+                field_data = self.field_to_struct(field, nested_path)
             if self.flat:
                 if isinstance(field_data, list):
                     ret.extend(field_data)
                 else:
-                    field_data['name'] = nested_path
+                    field_data['name'] = field_name if self.flat else nested_path
                     ret.append(field_data)
             else:
                 if isinstance(field_data, list):

@@ -12,6 +12,7 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                  * The order is important.
                  */
                 fields: [
+                    /*
                     {
                         name: 'first_name',
                         type: 'text',
@@ -60,6 +61,7 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                         label: 'Страна рождения',
                         options: [],
                     },
+                    */
                 ],
                 // Form data
                 form: this.getInitialFields(),
@@ -69,25 +71,29 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
         },
         created: function() {
             var self = this;
-            this.get('/eye-colors/').then(function(response) {
-                response.data.unshift({
-                    title: '', description: '',
+            // axios changes this context.
+            this.post('/users/get_fields/').then(function(response) {
+                self.$data.fields = response.data;
+                self.get('/eye-colors/').then(function(response) {
+                    response.data.unshift({
+                        title: '', description: '',
+                    });
+                    self.setArrayObjectKey(
+                        self.$data.fields,
+                        {'name': 'profile.eye_color.title'},
+                        {'options': response.data}
+                    );
                 });
-                self.setArrayObjectKey(
-                    self.$data.fields,
-                    {'name': 'profile.eye_color.title'},
-                    {'options': response.data}
-                );
-            });
-            this.get('/birth-countries/').then(function(response) {
-                response.data.unshift({
-                    title: '', description: '',
+                self.get('/birth-countries/').then(function(response) {
+                    response.data.unshift({
+                        title: '', description: '',
+                    });
+                    self.setArrayObjectKey(
+                        self.$data.fields,
+                        {'name': 'profile.birth_country.title'},
+                        {'options': response.data}
+                    );
                 });
-                self.setArrayObjectKey(
-                    self.$data.fields,
-                    {'name': 'profile.birth_country.title'},
-                    {'options': response.data}
-                );
             });
         },
         methods: {
