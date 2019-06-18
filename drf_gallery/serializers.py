@@ -98,7 +98,7 @@ class SerializerSerializer(serializers.BaseSerializer):
                 if isinstance(field_data, list):
                     ret.extend(field_data)
                 else:
-                    field_data['name'] = field_name if self.flat else nested_path
+                    field_data['name'] = nested_path if self.flat else field_name
                     ret.append(field_data)
             else:
                 if isinstance(field_data, list):

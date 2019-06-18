@@ -2,7 +2,7 @@
     <span>
         <input v-if="def.type == 'text'" class="form-control" @input="fieldChange($event)" :value="val">
         <input v-else-if="def.type == 'password'" class="form-control" type="password" @input="fieldChange($event)" :value="val">
-        <date-pick v-if="def.type == 'date'" :pickTime="false" :format="def.format" :inputAttributes="{class: 'form-control'}" @input="fieldChange($event)" :value="val"></date-pick>
+        <date-pick v-if="def.type == 'date'" :selectableYearRange="100" :pickTime="false" :format="def.format" :inputAttributes="{class: 'form-control'}" @input="fieldChange($event)" :value="val"></date-pick>
         <select v-else-if="def.type == 'select'" class="form-control" @input="fieldChange($event)" :value="val">
             <option v-for="option in def.options" :value="option.title" v-text="option.title" :selected="option.title == val"></option>
         </select>

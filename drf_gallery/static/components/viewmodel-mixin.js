@@ -113,9 +113,13 @@ define(['Vue', 'axios'], function (Vue, axios) {
                     }
                 ).catch(
                     function(error) {
-                        self.error(error.response, data);
-                        // return chained Promise result.
-                        return error.response;
+                        if (typeof error.response !== 'undefined') {
+                            self.error(error.response, data);
+                            // return chained Promise result.
+                            return error.response;
+                        } else {
+                            console.log(error);
+                        }
                     }
                 );
             },

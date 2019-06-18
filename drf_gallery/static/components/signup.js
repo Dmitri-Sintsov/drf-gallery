@@ -81,7 +81,10 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                     self.setArrayObjectKey(
                         self.$data.fields,
                         {'name': 'profile.eye_color.title'},
-                        {'options': response.data}
+                        {
+                            'options': response.data,
+                            'type': 'select',
+                        }
                     );
                 });
                 self.get('/birth-countries/').then(function(response) {
@@ -91,7 +94,10 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
                     self.setArrayObjectKey(
                         self.$data.fields,
                         {'name': 'profile.birth_country.title'},
-                        {'options': response.data}
+                        {
+                            'options': response.data,
+                            'type': 'select',
+                        }
                     );
                 });
             });
