@@ -59,6 +59,8 @@ class SerializerSerializer(serializers.BaseSerializer):
             typ = 'datetime'
         elif 'password' in field.field_name:
             typ = 'password'
+        elif hasattr(field, '_kwargs') and field._kwargs.get('style', {}).get('base_template') == 'textarea.html':
+            typ = 'textarea'
         return typ
 
     def field_to_struct(self, field, nested_path):

@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * https://vuejs.org/v2/guide/forms.html
+ * text and textarea elements use value property and input event;
+ * checkboxes and radiobuttons use checked property and change event;
+ * select fields use value as a prop and change as an event.
+ */
+
 define(
 ['text!/static/components/bs-form.html', 'dot', 'Vue', 'DatePick', 'ViewModelMixin'],
 function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
@@ -25,8 +32,8 @@ function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
         props: ['url', 'form', 'fields', 'errors'],
         methods: {
             formFieldChange: function(inputName, inputValue) {
-                // console.log(inputName);
-                // console.log(inputValue);
+                console.log(inputName);
+                console.log(inputValue);
                 this.$emit('form-field-change', inputName, inputValue);
             },
             clearErrors: function() {
