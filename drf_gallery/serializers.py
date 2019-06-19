@@ -46,13 +46,15 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 
 class SerializerSerializer(serializers.BaseSerializer):
 
-    def __init__(self, serializer=None, data=drf_fields.empty, read_only=None, flat=False, **kwargs):
-        self.read_only = read_only
+    def __init__(self, serializer=None, data=drf_fields.empty, flat=False, read_only=False, **kwargs):
         self.flat = flat
-        super().__init__(instance=serializer, data=data)
+        self.read_only = read_only
+        super().__init__(instance=serializer, data=data, **kwargs)
 
-    def get_field_type(self, field):
-        typ = 'text'
+    def skip_field(self, field, nested_path):
+        return self.read_only is not None and field.read_only != self.read_only
+
+    def get_field_type(self, field, nested_path):
         if isinstance(field, drf_fields.DateField):
             typ = 'date'
         elif isinstance(field, drf_fields.DateTimeField):
@@ -61,12 +63,14 @@ class SerializerSerializer(serializers.BaseSerializer):
             typ = 'password'
         elif hasattr(field, '_kwargs') and field._kwargs.get('style', {}).get('base_template') == 'textarea.html':
             typ = 'textarea'
+        else:
+            typ = 'text'
         return typ
 
     def field_to_struct(self, field, nested_path):
         ret = {
             'label': field.label,
-            'type': self.get_field_type(field),
+            'type': self.get_field_type(field, nested_path),
         }
         return ret
 
@@ -78,12 +82,12 @@ class SerializerSerializer(serializers.BaseSerializer):
             fields = serializer.fields
         ret = []
         for field_name, field in fields.items():
-            if self.read_only is not None and field.read_only != self.read_only:
-                continue
             if base_path == '':
                 nested_path = field_name
             else:
                 nested_path = base_path + '.' + field_name
+            if self.skip_field(field, nested_path):
+                continue
             if hasattr(field, 'fields'):
                 field_data = self.serializer_to_struct(field, nested_path)
             elif hasattr(field, 'child'):
