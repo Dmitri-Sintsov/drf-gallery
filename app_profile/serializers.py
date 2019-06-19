@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
 
-from drf_gallery.serializers import OptionalValidationSerializer, DynamicFieldsModelSerializer
+from drf_gallery.serializers import OptionalValidationSerializer, DynamicFieldsModelSerializer, SerializerSerializer
 
 from .models import EyeColor, BirthCountry, Profile
 
@@ -81,3 +81,16 @@ class UserSerializer(DynamicFieldsModelSerializer):
             **profile_data
         )
         return user
+
+
+class UserSerializerSerializer(SerializerSerializer):
+
+    labels ={
+        'first_name': 'Имя',
+        'last_name': 'Фамилия',
+    }
+    skip_field_path = [
+        'profile.eye_color.description',
+        # 'profile.birth_country.description',
+    ]
+    serializer_serializer = UserSerializer

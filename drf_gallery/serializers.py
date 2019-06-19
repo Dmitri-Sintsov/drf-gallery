@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from rest_framework import fields as drf_fields, serializers
 
 
@@ -46,15 +47,33 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 
 class SerializerSerializer(serializers.BaseSerializer):
 
-    def __init__(self, serializer=None, data=drf_fields.empty, flat=False, read_only=False, **kwargs):
+    labels = {}
+    skip_field_path = []
+    serializer_serializer = None
+
+    def __init__(
+            self, serializer=None, data=drf_fields.empty, flat=False, skip_field_path=None, read_only=False, **kwargs
+    ):
         self.flat = flat
+        if skip_field_path is None:
+            self.skip_field_path = self.get_skipped_field_path()
         self.read_only = read_only
-        super().__init__(instance=serializer, data=data, **kwargs)
+        super().__init__(instance=self.get_instance() if serializer is None else serializer, data=data, **kwargs)
 
-    def skip_field(self, field, nested_path):
-        return self.read_only is not None and field.read_only != self.read_only
+    def get_skipped_field_path(self):
+        return self.skip_field_path
 
-    def get_field_type(self, field, nested_path):
+    def get_instance(self):
+        return self.serializer_serializer()
+
+    def skip_field(self, field, field_path):
+        return field_path in self.skip_field_path or \
+           (self.read_only is not None and field.read_only != self.read_only)
+
+    def get_field_label(self, field, field_path):
+        return self.labels.get(field_path, _(field.label))
+
+    def get_field_type(self, field, field_path):
         if isinstance(field, drf_fields.DateField):
             typ = 'date'
         elif isinstance(field, drf_fields.DateTimeField):
@@ -67,10 +86,10 @@ class SerializerSerializer(serializers.BaseSerializer):
             typ = 'text'
         return typ
 
-    def field_to_struct(self, field, nested_path):
+    def field_to_struct(self, field, field_path):
         ret = {
-            'label': field.label,
-            'type': self.get_field_type(field, nested_path),
+            'label': self.get_field_label(field, field_path),
+            'type': self.get_field_type(field, field_path),
         }
         return ret
 
@@ -83,28 +102,28 @@ class SerializerSerializer(serializers.BaseSerializer):
         ret = []
         for field_name, field in fields.items():
             if base_path == '':
-                nested_path = field_name
+                field_path = field_name
             else:
-                nested_path = base_path + '.' + field_name
-            if self.skip_field(field, nested_path):
+                field_path = base_path + '.' + field_name
+            if self.skip_field(field, field_path):
                 continue
             if hasattr(field, 'fields'):
-                field_data = self.serializer_to_struct(field, nested_path)
+                field_data = self.serializer_to_struct(field, field_path)
             elif hasattr(field, 'child'):
                 child = field.child
                 if hasattr(child, 'fields'):
-                    field_data = self.serializer_to_struct(serializer, nested_path, force_many=child)
+                    field_data = self.serializer_to_struct(serializer, field_path, force_many=child)
                 else:
-                    field_data = self.field_to_struct(field, nested_path)
+                    field_data = self.field_to_struct(field, field_path)
             elif hasattr(field, 'child_relation'):
-                field_data = self.serializer_to_struct(field.child_relation, nested_path, force_many=field.child_relation)
+                field_data = self.serializer_to_struct(field.child_relation, field_path, force_many=field.child_relation)
             else:
-                field_data = self.field_to_struct(field, nested_path)
+                field_data = self.field_to_struct(field, field_path)
             if self.flat:
                 if isinstance(field_data, list):
                     ret.extend(field_data)
                 else:
-                    field_data['name'] = nested_path if self.flat else field_name
+                    field_data['name'] = field_path if self.flat else field_name
                     ret.append(field_data)
             else:
                 if isinstance(field_data, list):

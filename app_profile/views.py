@@ -11,10 +11,8 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 
-from drf_gallery.serializers import SerializerSerializer
-
 from .models import EyeColor, BirthCountry
-from .serializers import UserSerializer, EyeColorSerializer, BirthCountrySerializer
+from .serializers import UserSerializer, EyeColorSerializer, BirthCountrySerializer, UserSerializerSerializer
 
 
 def main(request):
@@ -64,7 +62,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def get_fields(self, request, *args, **kwargs):
-        response = Response(SerializerSerializer(UserSerializer(), flat=True).data)
+        response = Response(UserSerializerSerializer(flat=True).data)
         return response
 
     @action(detail=False, methods=['post'])
