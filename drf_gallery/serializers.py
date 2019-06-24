@@ -50,6 +50,7 @@ class SerializerSerializer(serializers.BaseSerializer):
     labels = {}
     skip_field_path = []
     serializer_serializer = None
+    add_empty_option = True
 
     def __init__(
             self, serializer=None, data=drf_fields.empty, flat=False, skip_field_path=None, read_only=False, **kwargs
@@ -74,7 +75,9 @@ class SerializerSerializer(serializers.BaseSerializer):
         return self.labels.get(field_path, _(field.label))
 
     def get_field_type(self, field, field_path):
-        if isinstance(field, drf_fields.DateField):
+        if isinstance(field, drf_fields.ChoiceField):
+            typ = 'select'
+        elif isinstance(field, drf_fields.DateField):
             typ = 'date'
         elif isinstance(field, drf_fields.DateTimeField):
             typ = 'datetime'
@@ -86,11 +89,26 @@ class SerializerSerializer(serializers.BaseSerializer):
             typ = 'text'
         return typ
 
+    def get_field_options(self, field, field_path):
+        options = [{
+            'val': '',
+            'text': '',
+        }] if self.add_empty_option else []
+        for choice in field.choices.items():
+            choice_val, choice_text = choice
+            options.append({
+                'val': choice_val,
+                'text': choice_text,
+            })
+        return options
+
     def field_to_struct(self, field, field_path):
         ret = {
             'label': self.get_field_label(field, field_path),
             'type': self.get_field_type(field, field_path),
         }
+        if ret['type'] == 'select':
+            ret['options'] = self.get_field_options(field, field_path)
         return ret
 
     # See representation.serializer_repr().

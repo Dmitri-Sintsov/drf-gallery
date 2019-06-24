@@ -73,33 +73,18 @@ define(['text!/static/components/signup.html', 'Vue', 'ViewModelMixin'], functio
             var self = this;
             // axios changes this context.
             this.post('/users/get_fields/').then(function(response) {
+                for (var i = 0; i < response.data.length; i++) {
+                    var field = response.data[i];
+                    if (field.name === 'password') {
+                        response.data.splice(i + 1, 0, {
+                            name: 'password2',
+                            type: 'password',
+                            label: 'Пароль (повторно)',
+                        });
+                        break;
+                    }
+                }
                 self.$data.fields = response.data;
-                self.get('/eye-colors/').then(function(response) {
-                    response.data.unshift({
-                        title: '', description: '',
-                    });
-                    self.setArrayObjectKey(
-                        self.$data.fields,
-                        {'name': 'profile.eye_color.title'},
-                        {
-                            'options': response.data,
-                            'type': 'select',
-                        }
-                    );
-                });
-                self.get('/birth-countries/').then(function(response) {
-                    response.data.unshift({
-                        title: '', description: '',
-                    });
-                    self.setArrayObjectKey(
-                        self.$data.fields,
-                        {'name': 'profile.birth_country.title'},
-                        {
-                            'options': response.data,
-                            'type': 'select',
-                        }
-                    );
-                });
             });
         },
         methods: {

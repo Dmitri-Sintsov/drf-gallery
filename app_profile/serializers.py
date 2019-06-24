@@ -10,6 +10,10 @@ from .models import EyeColor, BirthCountry, Profile
 
 
 class EyeColorSerializer(OptionalValidationSerializer):
+    title = serializers.ChoiceField(
+        choices=[(title, title) for title in EyeColor.objects.values_list('title', flat=True)],
+        label=EyeColor._meta.get_field('title').verbose_name
+    )
 
     class Meta:
         model = EyeColor
@@ -22,6 +26,10 @@ class EyeColorSerializer(OptionalValidationSerializer):
 
 
 class BirthCountrySerializer(OptionalValidationSerializer):
+    title = serializers.ChoiceField(
+        choices=[(title, title) for title in BirthCountry.objects.values_list('title', flat=True)],
+        label=BirthCountry._meta.get_field('title').verbose_name
+    )
 
     class Meta:
         model = BirthCountry
@@ -90,7 +98,8 @@ class UserSerializerSerializer(SerializerSerializer):
         'last_name': 'Фамилия',
     }
     skip_field_path = [
+        'username',
         'profile.eye_color.description',
-        # 'profile.birth_country.description',
+        'profile.birth_country.description',
     ]
     serializer_serializer = UserSerializer

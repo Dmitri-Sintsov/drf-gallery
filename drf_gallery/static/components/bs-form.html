@@ -4,7 +4,7 @@
         <input v-else-if="def.type == 'password'" class="form-control" type="password" @input="fieldChange($event)" :value="val">
         <date-pick v-if="def.type == 'date'" :selectableYearRange="100" :pickTime="false" :format="def.format" :inputAttributes="{class: 'form-control'}" @input="fieldChange($event)" :value="val"></date-pick>
         <select v-else-if="def.type == 'select'" class="form-control" @change="fieldChange($event)" :value="val">
-            <option v-for="option in def.options" :value="option.title" v-text="option.title" :selected="option.title == val"></option>
+            <option v-for="option in def.options" :value="option.val" v-text="option.text" :selected="option.val == val"></option>
         </select>
         <textarea v-else-if="def.type == 'textarea'"  class="form-control" @input="fieldChange($event)" :value="val"></textarea>
     </span>
