@@ -93,7 +93,7 @@ class UserSerializer(DynamicFieldsModelSerializer):
 
 class UserSerializerSerializer(SerializerSerializer):
 
-    labels ={
+    labels = {
         'first_name': 'Имя',
         'last_name': 'Фамилия',
     }

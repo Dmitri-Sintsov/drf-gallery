@@ -1,6 +1,7 @@
 <script type="text/x-template" id="bs-field-template">
     <span>
         <input v-if="def.type == 'text'" class="form-control" @input="fieldChange($event)" :value="val">
+        <input v-else-if="def.type == 'email'" class="form-control" type="email" @input="fieldChange($event)" :value="val">
         <input v-else-if="def.type == 'password'" class="form-control" type="password" @input="fieldChange($event)" :value="val">
         <date-pick v-if="def.type == 'date'" :selectableYearRange="100" :pickTime="false" :format="def.format" :inputAttributes="{class: 'form-control'}" @input="fieldChange($event)" :value="val"></date-pick>
         <select v-else-if="def.type == 'select'" class="form-control" @change="fieldChange($event)" :value="val">

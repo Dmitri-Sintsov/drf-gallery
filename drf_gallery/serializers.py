@@ -1,4 +1,7 @@
 from django.utils.translation import gettext as _
+
+from rest_framework.settings import api_settings
+from rest_framework.utils import humanize_datetime
 from rest_framework import fields as drf_fields, serializers
 
 
@@ -45,10 +48,88 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 
 
+class FieldSerializer:
+
+    def __init__(self, parent, field, field_path):
+        self.parent = parent
+        self.field = field
+        self.field_path = field_path
+
+    def get_field_label(self):
+        return self.parent.labels.get(self.field_path, _(self.field.label))
+
+    def to_email(self):
+        return {'type': 'email'}
+
+    def get_select_options(self):
+        options = [{
+            'val': '',
+            'text': '',
+        }] if self.parent.add_empty_option else []
+        for choice in self.field.choices.items():
+            choice_val, choice_text = choice
+            options.append({
+                'val': choice_val,
+                'text': choice_text,
+            })
+        return options
+
+    def to_select(self):
+        return {
+            'type': 'select',
+            'options': self.get_select_options(),
+        }
+
+    def get_date_format(self):
+        input_formats = getattr(self.field, 'input_formats', api_settings.DATE_INPUT_FORMATS)
+        return humanize_datetime.date_formats(input_formats)
+
+    def to_date(self):
+        return {
+            'type': 'date',
+            'format': self.get_date_format(),
+        }
+
+    def to_datetime(self):
+        return {
+            'type': 'datetime',
+            'format': self.get_date_format(),
+        }
+
+    def to_password(self):
+        return {'type': 'password'}
+
+    def to_textarea(self):
+        return {'type': 'textarea'}
+
+    def to_text(self):
+        return {'type': 'text'}
+
+    def to_struct(self):
+        if isinstance(self.field, drf_fields.EmailField):
+            ret = self.to_email()
+        elif isinstance(self.field, drf_fields.ChoiceField):
+            ret = self.to_select()
+        elif isinstance(self.field, drf_fields.DateField):
+            ret = self.to_date()
+        elif isinstance(self.field, drf_fields.DateTimeField):
+            ret = self.to_datetime()
+        elif 'password' in self.field.field_name:
+            ret = self.to_password()
+        elif hasattr(self.field, '_kwargs') and \
+                self.field._kwargs.get('style', {}).get('base_template') == 'textarea.html':
+            ret = self.to_textarea()
+        else:
+            ret = self.to_text()
+        ret['label'] = self.get_field_label()
+        return ret
+
+
 class SerializerSerializer(serializers.BaseSerializer):
 
     labels = {}
     skip_field_path = []
+    field_serializer = FieldSerializer
     serializer_serializer = None
     add_empty_option = True
 
@@ -69,49 +150,17 @@ class SerializerSerializer(serializers.BaseSerializer):
 
     def skip_field(self, field, field_path):
         return field_path in self.skip_field_path or \
-           (self.read_only is not None and field.read_only != self.read_only)
+            (self.read_only is not None and field.read_only != self.read_only)
 
-    def get_field_label(self, field, field_path):
-        return self.labels.get(field_path, _(field.label))
-
-    def get_field_type(self, field, field_path):
-        if isinstance(field, drf_fields.ChoiceField):
-            typ = 'select'
-        elif isinstance(field, drf_fields.DateField):
-            typ = 'date'
-        elif isinstance(field, drf_fields.DateTimeField):
-            typ = 'datetime'
-        elif 'password' in field.field_name:
-            typ = 'password'
-        elif hasattr(field, '_kwargs') and field._kwargs.get('style', {}).get('base_template') == 'textarea.html':
-            typ = 'textarea'
-        else:
-            typ = 'text'
-        return typ
-
-    def get_field_options(self, field, field_path):
-        options = [{
-            'val': '',
-            'text': '',
-        }] if self.add_empty_option else []
-        for choice in field.choices.items():
-            choice_val, choice_text = choice
-            options.append({
-                'val': choice_val,
-                'text': choice_text,
-            })
-        return options
+    def get_field_serializer(self, field, field_path):
+        return self.field_serializer(parent=self, field=field, field_path=field_path)
 
     def field_to_struct(self, field, field_path):
-        ret = {
-            'label': self.get_field_label(field, field_path),
-            'type': self.get_field_type(field, field_path),
-        }
-        if ret['type'] == 'select':
-            ret['options'] = self.get_field_options(field, field_path)
+        field_serializer = self.get_field_serializer(field, field_path)
+        ret = field_serializer.to_struct()
         return ret
 
-    # See representation.serializer_repr().
+        # See representation.serializer_repr().
     def serializer_to_struct(self, serializer, base_path='', force_many=None):
         if force_many:
             fields = force_many.fields
