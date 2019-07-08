@@ -5,6 +5,15 @@ from rest_framework.utils import humanize_datetime
 from rest_framework import fields as drf_fields, serializers
 
 
+class DynamicChoiceField(serializers.ChoiceField):
+
+    def __new__(cls, *args, **kwargs):
+        get_choices = kwargs.pop('get_choices')
+        kwargs['choices'] = get_choices()
+        self = super(DynamicChoiceField, cls).__new__(cls, *args, **kwargs)
+        return self
+
+
 # https://medium.com/django-rest-framework/dealing-with-unique-constraints-in-nested-serializers-dade33b831d9
 # https://stackoverflow.com/questions/36327029/model-with-this-field-already-exist-on-put-call-django-rest-framework
 class OptionalValidationSerializer(serializers.ModelSerializer):

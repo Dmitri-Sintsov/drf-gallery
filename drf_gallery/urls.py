@@ -19,7 +19,7 @@ from django.urls import path
 
 from rest_framework.routers import DefaultRouter
 
-from app_profile.views import main, UserViewSet, EyeColorViewSet, BirthCountryViewSet
+from app_profile.views import main, UserViewSet, EyeColorViewSet, CountryViewSet
 from app_gallery.views import AlbumViewSet, PhotoViewSet
 
 
@@ -31,7 +31,7 @@ urlpatterns = [
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'eye-colors', EyeColorViewSet, basename='eye_color')
-router.register(r'birth-countries', BirthCountryViewSet, basename='birth_country')
+router.register(r'countries', CountryViewSet, basename='country')
 router.register(r'albums', AlbumViewSet, basename='album')
 router.register(r'photos', PhotoViewSet, basename='photo')
 urlpatterns += router.urls

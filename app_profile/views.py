@@ -11,8 +11,8 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 
-from .models import EyeColor, BirthCountry
-from .serializers import UserSerializer, EyeColorSerializer, BirthCountrySerializer, UserSerializerSerializer
+from .models import EyeColor, Country
+from .serializers import UserSerializer, EyeColorSerializer, CountrySerializer, UserSerializerSerializer
 
 
 def main(request):
@@ -105,8 +105,8 @@ class EyeColorViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
 
 
-class BirthCountryViewSet(viewsets.ModelViewSet):
+class CountryViewSet(viewsets.ModelViewSet):
 
-    queryset = BirthCountry.objects.all()
-    serializer_class = BirthCountrySerializer
+    queryset = Country.objects.all()
+    serializer_class = CountrySerializer
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]

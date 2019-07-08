@@ -1,6 +1,6 @@
 [
   {
-    "model": "app_profile.birthcountry",
+    "model": "app_profile.country",
     "pk": 1,
     "fields": {
       "title": "Россия",
@@ -8,7 +8,7 @@
     }
   },
   {
-    "model": "app_profile.birthcountry",
+    "model": "app_profile.country",
     "pk": 2,
     "fields": {
       "title": "Украина",
@@ -16,7 +16,7 @@
     }
   },
   {
-    "model": "app_profile.birthcountry",
+    "model": "app_profile.country",
     "pk": 3,
     "fields": {
       "title": "Канада",

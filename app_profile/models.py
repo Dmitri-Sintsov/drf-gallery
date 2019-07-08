@@ -15,7 +15,7 @@ class EyeColor(models.Model):
         return self.title
 
 
-class BirthCountry(models.Model):
+class Country(models.Model):
     title = models.CharField(max_length=30, unique=True, blank=False, verbose_name='Название страны')
     description = models.TextField(max_length=255, blank=True, verbose_name='Описание страны')
 
@@ -36,10 +36,12 @@ class Profile(models.Model):
     birth_date = models.DateField(null=True, blank=False, verbose_name='День рождения')
     # One EyeColor to many Profile
     eye_color = models.ForeignKey(EyeColor, on_delete=models.CASCADE, verbose_name='Цвет глаз пользователя')
-    # One BirthCountry to many Profile
+    # One Country to many Profile
     birth_country = models.ForeignKey(
-        BirthCountry, on_delete=models.CASCADE, verbose_name='Страна рождения пользователя'
+        Country, on_delete=models.CASCADE, verbose_name='Страна рождения пользователя'
     )
+    # Many Country to many Profile
+    # visited_countries = models.ManyToManyField(Country, verbose_name='Посещенные страны')
 
     class Meta:
         verbose_name = 'Профиль пользователя'
