@@ -1,3 +1,4 @@
+from django.db.utils import OperationalError
 from django.utils.translation import gettext as _
 
 from rest_framework.settings import api_settings
@@ -7,11 +8,12 @@ from rest_framework import fields as drf_fields, serializers
 
 class DynamicChoiceField(serializers.ChoiceField):
 
-    def __new__(cls, *args, **kwargs):
-        get_choices = kwargs.pop('get_choices')
-        kwargs['choices'] = get_choices()
-        self = super(DynamicChoiceField, cls).__new__(cls, *args, **kwargs)
-        return self
+    def __init__(self, *args, get_choices, **kwargs):
+        try:
+            kwargs['choices'] = get_choices()
+        except OperationalError:
+            kwargs['choices'] = []
+        super().__init__(*args, **kwargs)
 
 
 # https://medium.com/django-rest-framework/dealing-with-unique-constraints-in-nested-serializers-dade33b831d9

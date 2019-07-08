@@ -19,7 +19,6 @@ class EyeColorSerializer(OptionalValidationSerializer):
 
     title = DynamicChoiceField(
         get_choices=lambda: [(title, title) for title in EyeColor.objects.values_list('title', flat=True)],
-        choices=[],
         label=EyeColor._meta.get_field('title').verbose_name
     )
 
@@ -35,20 +34,8 @@ class EyeColorSerializer(OptionalValidationSerializer):
 
 class CountrySerializer(OptionalValidationSerializer):
 
-    def __init__(self, *args, **kwargs):
-        choices = OrderedDict(self.get_choices())
-        self._declared_fields['title'].choices = choices
-        self._declared_fields['title']._choices = choices
-        super().__init__(*args, **kwargs)
-
-    def get_choices(self):
-        try:
-            return [(title, title) for title in Country.objects.values_list('title', flat=True)]
-        except OperationalError:
-            return []
-
-    title = serializers.ChoiceField(
-        choices=[],
+    title = DynamicChoiceField(
+        get_choices=lambda: [(title, title) for title in Country.objects.values_list('title', flat=True)],
         label=Country._meta.get_field('title').verbose_name
     )
 
