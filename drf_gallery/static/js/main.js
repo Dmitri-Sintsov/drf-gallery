@@ -1,93 +1,90 @@
 'use strict';
 
-requirejs.config({
-    paths: {
-        'jquery': '/static/admin/js/vendor/jquery/jquery.min',
-        'text': '/static/js/require/text.min',
-        'dot': '/static/js/vue/dot-object',
-        'Vue': '/static/js/vue/vue',
-        'Vuex': '/static/js/vue/vuex',
-        'VueRouter': '/static/js/vue/vue-router',
-        'axios': '/static/js/vue/axios.min',
-        'DatePick': '/static/js/vue/vueDatePick',
-        'ViewModelMixin': '/static/components/viewmodel-mixin',
-        'BsForm': '/static/components/bs-form',
+import Vue from '/static/js/vue/vue.esm.browser.js';
+import Vuex from '/static/js/vue/vuex.esm.browser.js';
+import VueRouter from '/static/js/vue/vue-router.esm.browser.js';
+import ViewModelMixin from '/static/components/viewmodel-mixin.js';
+import PromiseBsForm from '/static/components/bs-form.js';
+import PromiseSignup from '/static/components/signup.js' ;
+import PromiseLogin from '/static/components/login.js' ;
+import PromiseAlbums from '/static/components/login.js' ;
+
+
+var DELIMITER_PATCH = { replace: function() { return '^(?!.).' } };
+Vue.mixin({
+    delimiters: [DELIMITER_PATCH, DELIMITER_PATCH]
+});
+Vue.use(Vuex);
+Vue.use(VueRouter);
+
+(async function() {
+    return await PromiseBsForm();
+})();
+
+var store = new Vuex.Store({
+    state: function () {
+        var vueStoreJson = document.getElementById('vue_store_json');
+        return vueStoreJson ? JSON.parse(vueStoreJson.textContent) : {};
+    },
+    mutations: {
+        user: function(state, user) {
+            Vue.set(state, 'user', user);
+        },
+        csrfToken: function(state, csrfToken) {
+            Vue.set(state, 'csrfToken', csrfToken);
+        },
     },
 });
 
-require(
-    ['jquery', 'Vue', 'Vuex', 'VueRouter', 'ViewModelMixin', 'BsForm'],
-    function ($, Vue, Vuex, VueRouter, ViewModelMixin, BsForm) {
+var Home = {
+    template: '#home_template'
+};
 
-        var DELIMITER_PATCH = { replace: function() { return '^(?!.).' } };
-        Vue.mixin({
-            delimiters: [DELIMITER_PATCH, DELIMITER_PATCH]
-        });
-        Vue.use(Vuex);
-        Vue.use(VueRouter);
+function getRoutes() {
+    return [
+        {
+            path: '/', name: 'home', component: Home,
+            meta: {text: 'В начало',  isAnon: null},
+        },
+        {
+            path: '/signup', name: 'signup', component: async function() {
+                return await PromiseSignup();
+            },
+            meta: {text: 'Зарегистрироваться', isAnon: true},
+        },
+        {
+            path: '/login', name: 'login', component: async function() {
+                return await PromiseLogin();
+            },
+            meta: {text: 'Войти', isAnon: true},
+        },
+        {
+            path: '/albums/:owner_id', name: 'albums', component: async function() {
+                return await PromiseAlbums();
+            },
+            meta: {text: 'Альбомы', isAnon: false},
+        },
+        {
+            path: '/logout', name: 'logout',
+            meta: {text: 'Выйти', isAnon: false},
+        },
+    ];
+};
 
-        function loadComponent(name) {
-            return function (resolve) {
-                var result = require([name], resolve);
-                return result;
-            };
-        };
-        var store = new Vuex.Store({
-            state: function () {
-                var vueStoreJson = document.getElementById('vue_store_json');
-                return vueStoreJson ? JSON.parse(vueStoreJson.textContent) : {};
-            },
-            mutations: {
-                user: function(state, user) {
-                    Vue.set(state, 'user', user);
-                },
-                csrfToken: function(state, csrfToken) {
-                    Vue.set(state, 'csrfToken', csrfToken);
-                },
-            },
-        });
-
-        var Home = {
-            template: '#home_template'
-        };
-        var routes = [
-            {
-                path: '/', name: 'home', component: Home,
-                meta: {text: 'В начало',  isAnon: null},
-            },
-            {
-                path: '/signup', name: 'signup', component: loadComponent('/static/components/signup.js'),
-                meta: {text: 'Зарегистрироваться', isAnon: true},
-            },
-            {
-                path: '/login', name: 'login', component: loadComponent('/static/components/login.js'),
-                meta: {text: 'Войти', isAnon: true},
-            },
-            {
-                path: '/albums/:owner_id', name: 'albums', component: loadComponent('/static/components/albums.js'),
-                meta: {text: 'Альбомы', isAnon: false},
-            },
-            {
-                path: '/logout', name: 'logout',
-                meta: {text: 'Выйти', isAnon: false},
-            },
-        ];
-        var router = new VueRouter({
-            'routes': routes, // short for `routes: routes`
-            linkActiveClass: "active",
-            linkExactActiveClass: "active",
-        });
-        var app = new Vue({
-            router,
-            store,
-            mixins: [ViewModelMixin],
-            watch: {
-                '$route': function(to, from) {
-                    if (to.name === 'logout') {
-                        this.post('/users/logout/');
-                    }
-                },
+var router = new VueRouter({
+    routes: getRoutes(), // short for `routes: routes`
+    linkActiveClass: "active",
+    linkExactActiveClass: "active",
+});
+var app = new Vue({
+    router,
+    store,
+    mixins: [ViewModelMixin],
+    watch: {
+        '$route': function(to, from) {
+            if (to.name === 'logout') {
+                this.post('/users/logout/');
             }
-        }).$mount('#app');
+        },
     }
-);
+}).$mount('#app');

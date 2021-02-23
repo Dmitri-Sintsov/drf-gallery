@@ -1,6 +1,12 @@
 'use strict';
 
-define(['text!/static/components/albums.html', 'Vue', 'ViewModelMixin'], function (htmlTemplate, Vue, ViewModelMixin) {
+import Vue from '/static/js/vue/vue.esm.browser.js';
+import ViewModelMixin from '/static/components/viewmodel-mixin.js';
+
+
+async function PromiseAlbums() {
+    var response = await axios.get('/static/components/albums.html');
+    var htmlTemplate = response.data;
     return Vue.component('albums', {
         template: htmlTemplate,
         store: document.getElementById('app').__vue__.$store,
@@ -19,4 +25,6 @@ define(['text!/static/components/albums.html', 'Vue', 'ViewModelMixin'], functio
         methods: {
         },
     });
-});
+};
+
+export default PromiseAlbums;

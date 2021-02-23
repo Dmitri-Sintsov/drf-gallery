@@ -12,5 +12,5 @@
 
 {% block script %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'js/require/require.js' %}" data-main="{% static 'js/main.js' %}"></script>
+    <script type="module" src="{% static 'js/main.js' %}"></script>
 {% endblock script %}

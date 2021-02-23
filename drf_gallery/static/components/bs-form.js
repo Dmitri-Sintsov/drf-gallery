@@ -1,5 +1,12 @@
 'use strict';
 
+import axios from '/static/js/vue/axios-esm.js';
+import dot from '/static/js/vue/dot-object-esm.js';
+import Vue from '/static/js/vue/vue.esm.browser.js';
+import DatePick from '/static/js/vue/vueDatePick.esm.js';
+import ViewModelMixin from '/static/components/viewmodel-mixin.js';
+
+
 /**
  * https://vuejs.org/v2/guide/forms.html
  * text and textarea elements use value property and input event;
@@ -7,12 +14,14 @@
  * select fields use value as a prop and change as an event.
  */
 
-define(
-['text!/static/components/bs-form.html', 'dot', 'Vue', 'DatePick', 'ViewModelMixin'],
-function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
+async function PromiseBsForm() {
+
+    var response = await axios.get('/static/components/bs-form.html');
+    var bsFormTemplate = response.data;
     if (!document.getElementById('bs-form-template')) {
         document.body.insertAdjacentHTML('beforeend', bsFormTemplate);
     }
+
     var bsField = Vue.component('bs-field', {
         template: '#bs-field-template',
         components: {'date-pick': DatePick},
@@ -25,6 +34,7 @@ function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
             },
         }
     });
+
     var bsForm = Vue.component('bs-form', {
         template: '#bs-form-template',
         components: {'bs-field': bsField},
@@ -74,4 +84,9 @@ function (bsFormTemplate, dot, Vue, DatePick, ViewModelMixin) {
             },
         }
     });
-});
+
+    return bsForm;
+
+};
+
+export default PromiseBsForm;

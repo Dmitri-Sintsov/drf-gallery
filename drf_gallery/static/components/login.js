@@ -1,6 +1,12 @@
 'use strict';
 
-define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function (htmlTemplate, Vue, ViewModelMixin) {
+import axios from '/static/js/vue/axios-esm.js';
+import Vue from '/static/js/vue/vue.esm.browser.js';
+import ViewModelMixin from '/static/components/viewmodel-mixin.js';
+
+async function PromiseLogin() {
+    var response = await axios.get('/static/components/login.html');
+    var htmlTemplate = response.data;
     return Vue.component('signup', {
         template: htmlTemplate,
         store: document.getElementById('app').__vue__.$store,
@@ -53,4 +59,6 @@ define(['text!/static/components/login.html', 'Vue', 'ViewModelMixin'], function
             },
         },
     });
-});
+};
+
+export default PromiseLogin;
