@@ -4,10 +4,10 @@ import Vue from '/static/js/vue/vue.esm.browser.js';
 import Vuex from '/static/js/vue/vuex.esm.browser.js';
 import VueRouter from '/static/js/vue/vue-router.esm.browser.js';
 import ViewModelMixin from '/static/components/viewmodel-mixin.js';
+import PromiseSignup from '/static/components/signup.js';
 import PromiseBsForm from '/static/components/bs-form.js';
-import PromiseSignup from '/static/components/signup.js' ;
-import PromiseLogin from '/static/components/login.js' ;
-import PromiseAlbums from '/static/components/login.js' ;
+import PromiseLogin from '/static/components/login.js';
+import PromiseAlbums from '/static/components/albums.js';
 
 
 var DELIMITER_PATCH = { replace: function() { return '^(?!.).' } };
