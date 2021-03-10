@@ -1,10 +1,10 @@
 'use strict';
 
-import axios from '/static/js/vue/axios-esm.js';
-import dot from '/static/js/vue/dot-object-esm.js';
-import Vue from '/static/js/vue/vue.esm.browser.js';
-import DatePick from '/static/js/vue/vueDatePick.esm.js';
-import ViewModelMixin from '/static/components/viewmodel-mixin.js';
+import axios from '../js/vue/axios-esm.js';
+import dot from '../js/vue/dot-object-esm.js';
+import Vue from '../js/vue/vue.esm.browser.js';
+import DatePick from '../js/vue/vueDatePick.esm.js';
+import ViewModelMixin from './viewmodel-mixin.js';
 
 
 /**

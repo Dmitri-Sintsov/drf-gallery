@@ -1,8 +1,13 @@
 'use strict';
 
-import axios from '/static/js/vue/axios-esm.js';
-import Vue from '/static/js/vue/vue.esm.browser.js';
-import ViewModelMixin from '/static/components/viewmodel-mixin.js';
+import axios from '../js/vue/axios-esm.js';
+import Vue from '../js/vue/vue.esm.browser.js';
+import ViewModelMixin from './viewmodel-mixin.js';
+import PromiseBsForm from './bs-form.js';
+
+(async function() {
+    return await PromiseBsForm();
+})();
 
 async function PromiseSignup() {
     var response = await axios.get('/static/components/signup.html');

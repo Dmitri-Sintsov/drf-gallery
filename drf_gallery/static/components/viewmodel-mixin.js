@@ -1,7 +1,7 @@
 'use strict';
 
-import Vue from '/static/js/vue/vue.esm.browser.js';
-import axios from '/static/js/vue/axios-esm.js';
+import Vue from '../js/vue/vue.esm.browser.js';
+import axios from '../js/vue/axios-esm.js';
 
 var ViewModelMixin = {
     methods: {
