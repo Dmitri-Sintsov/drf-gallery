@@ -16,6 +16,10 @@ from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.contrib.staticfiles.management.commands import runserver
 
 
+DENO_INSTALL = os.getenv('DENO_INSTALL')
+rollup_hint = [b'"use rollup"', b"'use rollup"]
+
+
 # from django.views.static import serve
 def serve_rollup(request, path, document_root=None, show_indexes=False):
     """
@@ -43,11 +47,20 @@ def serve_rollup(request, path, document_root=None, show_indexes=False):
         raise Http404(_('“%(path)s” does not exist') % {'path': fullpath})
     # Respect the If-Modified-Since header.
     statobj = fullpath.stat()
+    """
     if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
                               statobj.st_mtime, statobj.st_size):
         return HttpResponseNotModified()
+    """
     content_type, encoding = mimetypes.guess_type(str(fullpath))
     content_type = content_type or 'application/octet-stream'
+    if content_type == "application/javascript":
+        with fullpath.open('rb') as f:
+            hint = f.read(len(rollup_hint[0]))
+            if hint in rollup_hint:
+                pass
+            else:
+                pass
     response = FileResponse(fullpath.open('rb'), content_type=content_type)
     response["Last-Modified"] = http_date(statobj.st_mtime)
     if encoding:

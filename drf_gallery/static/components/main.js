@@ -1,4 +1,4 @@
-'use strict';
+'use rollup'
 
 import Vue from '../js/vue/vue.esm.browser.js';
 import Vuex from '../js/vue/vuex.esm.browser.js';
