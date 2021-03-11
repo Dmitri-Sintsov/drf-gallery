@@ -71,6 +71,7 @@ var router = new VueRouter({
     linkActiveClass: "active",
     linkExactActiveClass: "active",
 });
+
 var app = new Vue({
     router,
     store,
@@ -82,4 +83,7 @@ var app = new Vue({
             }
         },
     }
-}).$mount('#app');
+});
+
+// deno bundle does not support new Vue().$mount(), thus calling $mount separately.
+app.$mount('#app');
