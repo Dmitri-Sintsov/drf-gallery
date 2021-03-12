@@ -1,1 +1,2 @@
-deno run --unstable --allow-net server.ts
+# chrome://inspect
+deno run -A --inspect-brk --unstable --allow-net server.ts

@@ -7,4 +7,3 @@ console.log('Server listening on port :8000')
 for await (const req of s) {
   req.respond({ body: 'Hello Deno!\n' })
 }
-
