@@ -1,11 +1,12 @@
 import mimetypes
 import os
 import posixpath
+import requests
 from pathlib import Path
 
 
 from django.http import (
-    FileResponse, Http404, HttpResponseNotModified,
+    HttpResponse, FileResponse, Http404, HttpResponseNotModified, StreamingHttpResponse
 )
 from django.utils._os import safe_join
 from django.utils.http import http_date
@@ -16,8 +17,13 @@ from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.contrib.staticfiles.management.commands import runserver
 
 
-DENO_INSTALL = os.getenv('DENO_INSTALL')
-rollup_hint = [b'"use rollup"', b"'use rollup"]
+rollup_hints = ['"use rollup"', "'use rollup'"]
+
+
+def should_rollup(fullpath):
+    with fullpath.open('r', encoding='utf-8') as f:
+        hint = f.read(len(rollup_hints[0]))
+        return hint in rollup_hints
 
 
 # from django.views.static import serve
@@ -47,21 +53,19 @@ def serve_rollup(request, path, document_root=None, show_indexes=False):
         raise Http404(_('“%(path)s” does not exist') % {'path': fullpath})
     # Respect the If-Modified-Since header.
     statobj = fullpath.stat()
-    """
     if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
                               statobj.st_mtime, statobj.st_size):
         return HttpResponseNotModified()
-    """
     content_type, encoding = mimetypes.guess_type(str(fullpath))
     content_type = content_type or 'application/octet-stream'
-    if content_type == "application/javascript":
-        with fullpath.open('rb') as f:
-            hint = f.read(len(rollup_hint[0]))
-            if hint in rollup_hint:
-                pass
-            else:
-                pass
-    response = FileResponse(fullpath.open('rb'), content_type=content_type)
+    if content_type == "application/javascript" and should_rollup(fullpath):
+        rollup_response = requests.get(f'http://127.0.0.1:8000/rollup/{path}')
+        file_stream = rollup_response.text
+        response = HttpResponse(
+            file_stream, content_type=content_type
+        )
+    else:
+        response = FileResponse(fullpath.open('rb'), content_type=content_type)
     response["Last-Modified"] = http_date(statobj.st_mtime)
     if encoding:
         response["Content-Encoding"] = encoding

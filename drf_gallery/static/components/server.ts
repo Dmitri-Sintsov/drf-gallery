@@ -18,12 +18,7 @@ let args = parse(Deno.args);
 const httpHost = '127.0.0.1';
 const httpPort = args['port'];
 
-const router = new Router();
-router
-.get("/", (context) => {
-    context.response.body = "Hello, deno!";
-})
-.get("/rollup/:filename", async (context) => {
+async function inlineRollup(context: any) {
     // https://unpkg.com/rollup@2.41.0/dist/rollup.d.ts
     // https://gist.github.com/vsajip/94fb524746b151b5160924418e6882e5
     // https://deno.land/x/drollup@2.41.0+0.16.1#javascript-api
@@ -31,8 +26,18 @@ router
         format: 'es' as const,
         sourcemap: 'inline',
     };
+    let filename;
+    if ('filename' in context.params) {
+        // HTTP GET
+        filename = context.params.filename;
+    } else {
+        // HTTP POST
+        const body = context.request.body({ type: 'form' });
+        const value = await body.value;
+        filename = value.get('filename');
+    }
     const options = {
-        input: context.params.filename,
+        input: filename,
         output: outputOptions,
     };
     const bundle = await rollup(options);
@@ -77,12 +82,21 @@ router
             // console.log('Chunk', file.modules);
             // https://github.com/cmorten/deno-rollup/blob/bb159fc3a8c3c9fdd0b57142cc7bf84ae93dd2f4/src/cli/build.ts
             // https://deno.land/x/drollup@2.41.0+0.16.1/src/rollup/write.ts
+            context.response.type = 'application/javascript';
             context.response.body = file.code + `\n//# ${SOURCEMAPPING_URL}=${file.map!.toUrl()}\n`;
         }
     }
 
     // context.response.body = `Hello, ${context.params.filename}!`;
-});
+};
+
+const router = new Router();
+router
+.get("/", (context) => {
+    context.response.body = "Hello, deno!";
+})
+.get("/rollup/:filename", inlineRollup)
+.post("/rollup/", inlineRollup);
 
 const app = new Application();
 app.use(router.routes());
