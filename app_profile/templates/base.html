@@ -3,7 +3,7 @@
 
 {% block style %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static "css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 {% endblock style %}
 
 {% block content %}
@@ -12,5 +12,5 @@
 
 {% block script %}
     {{ block.super }}
-    <script type="module" src="{% static 'components/main.js' %}"></script>
+    <script type="module" src="{% static 'components/main_output.js' %}"></script>
 {% endblock script %}
