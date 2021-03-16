@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 from django.http import (
-    HttpResponse, FileResponse, Http404, HttpResponseNotModified, StreamingHttpResponse
+    FileResponse, Http404, HttpResponseNotModified, StreamingHttpResponse
 )
 from django.utils._os import safe_join
 from django.utils.http import http_date
@@ -58,7 +58,11 @@ def serve_rollup(request, path, document_root=None, show_indexes=False):
     content_type, encoding = mimetypes.guess_type(str(fullpath))
     content_type = content_type or 'application/octet-stream'
     if content_type == "application/javascript" and should_rollup(fullpath):
-        rollup_response = requests.get(f'http://127.0.0.1:8000/rollup/{path}', stream=True)
+        rollup_response = requests.post(
+            'http://127.0.0.1:8000/rollup/',
+            data={'filename': str(fullpath)},
+            stream=True
+        )
         # file_stream = rollup_response.text
         response = StreamingHttpResponse(
             rollup_response.iter_content(chunk_size=proxy_chunk_size), content_type=content_type
