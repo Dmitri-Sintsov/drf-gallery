@@ -10,6 +10,7 @@ from django.http import (
 )
 from django.utils._os import safe_join
 from django.utils.http import http_date
+from django.utils.translation import gettext as _
 from django.conf import settings
 from django.views.static import directory_index, was_modified_since
 from django.contrib.staticfiles import finders
@@ -17,11 +18,12 @@ from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.contrib.staticfiles.management.commands import runserver
 
 
-rollup_hints = ['"use rollup"', "'use rollup'"]
+rollup_hints = [b'"use rollup"', b"'use rollup'"]
+proxy_chunk_size = 256 * 1024
 
 
 def should_rollup(fullpath):
-    with fullpath.open('r', encoding='utf-8') as f:
+    with fullpath.open('rb') as f:
         hint = f.read(len(rollup_hints[0]))
         return hint in rollup_hints
 
@@ -53,18 +55,18 @@ def serve_rollup(request, path, document_root=None, show_indexes=False):
         raise Http404(_('“%(path)s” does not exist') % {'path': fullpath})
     # Respect the If-Modified-Since header.
     statobj = fullpath.stat()
-    if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
-                              statobj.st_mtime, statobj.st_size):
-        return HttpResponseNotModified()
     content_type, encoding = mimetypes.guess_type(str(fullpath))
     content_type = content_type or 'application/octet-stream'
     if content_type == "application/javascript" and should_rollup(fullpath):
-        rollup_response = requests.get(f'http://127.0.0.1:8000/rollup/{path}')
-        file_stream = rollup_response.text
-        response = HttpResponse(
-            file_stream, content_type=content_type
+        rollup_response = requests.get(f'http://127.0.0.1:8000/rollup/{path}', stream=True)
+        # file_stream = rollup_response.text
+        response = StreamingHttpResponse(
+            rollup_response.iter_content(chunk_size=proxy_chunk_size), content_type=content_type
         )
     else:
+        if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
+                                  statobj.st_mtime, statobj.st_size):
+            return HttpResponseNotModified()
         response = FileResponse(fullpath.open('rb'), content_type=content_type)
     response["Last-Modified"] = http_date(statobj.st_mtime)
     if encoding:
