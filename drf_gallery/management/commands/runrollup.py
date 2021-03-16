@@ -1,12 +1,15 @@
+import json
 import mimetypes
 import os
 import posixpath
 import requests
+import traceback
+
+from requests.exceptions import ConnectionError
 from pathlib import Path
 
-
 from django.http import (
-    FileResponse, Http404, HttpResponseNotModified, StreamingHttpResponse
+    HttpResponse, FileResponse, Http404, HttpResponseNotModified, StreamingHttpResponse
 )
 from django.utils._os import safe_join
 from django.utils.http import http_date
@@ -53,21 +56,29 @@ def serve_rollup(request, path, document_root=None, show_indexes=False):
         raise Http404(_("Directory indexes are not allowed here."))
     if not fullpath.exists():
         raise Http404(_('“%(path)s” does not exist') % {'path': fullpath})
-    # Respect the If-Modified-Since header.
     statobj = fullpath.stat()
     content_type, encoding = mimetypes.guess_type(str(fullpath))
     content_type = content_type or 'application/octet-stream'
     if content_type == "application/javascript" and should_rollup(fullpath):
-        rollup_response = requests.post(
-            'http://127.0.0.1:8000/rollup/',
-            data={'filename': str(fullpath)},
-            stream=True
-        )
-        # file_stream = rollup_response.text
-        response = StreamingHttpResponse(
-            rollup_response.iter_content(chunk_size=proxy_chunk_size), content_type=content_type
-        )
+        try:
+            rollup_response = requests.post(
+                'http://127.0.0.1:8000/rollup/',
+                data={'filename': str(fullpath)},
+                stream=True
+            )
+            if rollup_response.status_code != 200:
+                raise ConnectionError(rollup_response)
+            # file_stream = rollup_response.text
+            response = StreamingHttpResponse(
+                rollup_response.iter_content(chunk_size=proxy_chunk_size), content_type=content_type
+            )
+        except ConnectionError as ex:
+            ex_string = json.dumps('\n'.join(
+                list(traceback.TracebackException.from_exception(ex).format())
+            ))
+            return HttpResponse(f'throw Error({ex_string});', content_type=content_type)
     else:
+        # Respect the If-Modified-Since header.
         if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
                                   statobj.st_mtime, statobj.st_size):
             return HttpResponseNotModified()
