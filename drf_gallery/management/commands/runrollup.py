@@ -31,6 +31,25 @@ def should_rollup(fullpath):
         return hint in rollup_hints
 
 
+def get_rollup_response(fullpath, content_type):
+    try:
+        rollup_response = requests.post(
+            'http://127.0.0.1:8000/rollup/',
+            data={'filename': str(fullpath)},
+            stream=True
+        )
+        if rollup_response.status_code != 200:
+            raise ConnectionError(rollup_response)
+        return StreamingHttpResponse(
+            rollup_response.iter_content(chunk_size=proxy_chunk_size), content_type=content_type
+        )
+    except ConnectionError as ex:
+        ex_string = json.dumps('\n'.join(
+            list(traceback.TracebackException.from_exception(ex).format())
+        ))
+        return HttpResponse(f'throw Error({ex_string});', content_type=content_type)
+
+
 # from django.views.static import serve
 def serve_rollup(request, path, document_root=None, show_indexes=False):
     """
@@ -60,23 +79,10 @@ def serve_rollup(request, path, document_root=None, show_indexes=False):
     content_type, encoding = mimetypes.guess_type(str(fullpath))
     content_type = content_type or 'application/octet-stream'
     if content_type == "application/javascript" and should_rollup(fullpath):
-        try:
-            rollup_response = requests.post(
-                'http://127.0.0.1:8000/rollup/',
-                data={'filename': str(fullpath)},
-                stream=True
-            )
-            if rollup_response.status_code != 200:
-                raise ConnectionError(rollup_response)
-            # file_stream = rollup_response.text
-            response = StreamingHttpResponse(
-                rollup_response.iter_content(chunk_size=proxy_chunk_size), content_type=content_type
-            )
-        except ConnectionError as ex:
-            ex_string = json.dumps('\n'.join(
-                list(traceback.TracebackException.from_exception(ex).format())
-            ))
-            return HttpResponse(f'throw Error({ex_string});', content_type=content_type)
+        response = get_rollup_response(fullpath, content_type)
+        if not isinstance(response, StreamingHttpResponse):
+            # report error
+            return response
     else:
         # Respect the If-Modified-Since header.
         if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
