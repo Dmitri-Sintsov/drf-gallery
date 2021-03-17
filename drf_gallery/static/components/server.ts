@@ -8,7 +8,7 @@
 // https://gist.github.com/Rich-Harris/d472c50732dab03efeb37472b08a3f32
 
 import { parse } from "https://deno.land/std/flags/mod.ts";
-import { rollup } from "https://deno.land/x/drollup@2.41.0+0.16.1/mod.ts";
+import { rollup, RollupOutput } from "https://deno.land/x/drollup@2.41.0+0.16.1/mod.ts";
 import type { OutputOptions } from "https://deno.land/x/drollup@2.41.0+0.16.1/mod.ts";
 import { SOURCEMAPPING_URL } from "https://deno.land/x/drollup@2.41.0+0.16.1/src/rollup/write.ts";
 // import { serve } from 'https://deno.land/std/http/server.ts'
@@ -27,6 +27,7 @@ async function inlineRollup(context: any) {
         sourcemap: 'inline',
     };
     let filename;
+
     if ('filename' in context.params) {
         // HTTP GET
         filename = context.params.filename;
@@ -34,16 +35,27 @@ async function inlineRollup(context: any) {
         // HTTP POST
         const body = context.request.body({ type: 'form' });
         const value = await body.value;
-        filename = value.get('filename');
+        filename = value.get('filename', '');
     }
     const options = {
         input: filename,
         output: outputOptions,
     };
-    const bundle = await rollup(options);
-    const { output } = await bundle.generate(options.output);
 
-    for (const file of output) {
+    context.response.type = 'application/javascript';
+
+    let rollupOutput: RollupOutput;
+
+    try {
+        const bundle = await rollup(options);
+        rollupOutput = await bundle.generate(options.output);
+    } catch(e) {
+        context.response.status = 500;
+        context.response.body = e.toString();
+        return;
+    };
+
+    for (const file of rollupOutput.output) {
         if (file.type === 'asset') {
             // For assets, this contains
             // {
@@ -82,12 +94,15 @@ async function inlineRollup(context: any) {
             // console.log('Chunk', file.modules);
             // https://github.com/cmorten/deno-rollup/blob/bb159fc3a8c3c9fdd0b57142cc7bf84ae93dd2f4/src/cli/build.ts
             // https://deno.land/x/drollup@2.41.0+0.16.1/src/rollup/write.ts
-            context.response.type = 'application/javascript';
             context.response.body = file.code + `\n//# ${SOURCEMAPPING_URL}=${file.map!.toUrl()}\n`;
+            break;
+        }
+        if (!context.response.body) {
+            context.response.status = 500;
+            context.response = 'Empty body'
         }
     }
 
-    // context.response.body = `Hello, ${context.params.filename}!`;
 };
 
 const router = new Router();

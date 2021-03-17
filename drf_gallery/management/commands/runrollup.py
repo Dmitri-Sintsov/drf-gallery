@@ -38,11 +38,14 @@ def get_rollup_response(fullpath, content_type):
             data={'filename': str(fullpath)},
             stream=True
         )
-        if rollup_response.status_code != 200:
-            raise ConnectionError(rollup_response)
-        return StreamingHttpResponse(
-            rollup_response.iter_content(chunk_size=proxy_chunk_size), content_type=content_type
-        )
+        if rollup_response.status_code == 200:
+            return StreamingHttpResponse(
+                rollup_response.iter_content(chunk_size=proxy_chunk_size), content_type=content_type
+            )
+        else:
+            response = HttpResponse('throw Error({});'.format(json.dumps(rollup_response.text)))
+            response.status_code = rollup_response.status_code
+            return response
     except ConnectionError as ex:
         ex_string = json.dumps('\n'.join(
             list(traceback.TracebackException.from_exception(ex).format())
