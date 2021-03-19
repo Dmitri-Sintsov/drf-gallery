@@ -16,9 +16,9 @@ import ViewModelMixin from './viewmodel-mixin.js';
 
 async function PromiseBsForm() {
 
-    var response = await axios.get('/static/components/bs-form.html');
-    var bsFormTemplate = response.data;
     if (!document.getElementById('bs-form-template')) {
+        var response = await axios.get('/static/components/bs-form.html');
+        var bsFormTemplate = response.data;
         document.body.insertAdjacentHTML('beforeend', bsFormTemplate);
     }
 
