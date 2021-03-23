@@ -1,5 +1,6 @@
 'use rollup'
 
+import DjangoDenoSettings from '../django-deno/settings.js';
 import Vue from '../js/vue/vue.esm.browser.js';
 import Vuex from '../js/vue/vuex.esm.browser.js';
 import VueRouter from '../js/vue/vue-router.esm.browser.js';
@@ -8,6 +9,7 @@ import PromiseSignup from './signup.js';
 import PromiseLogin from './login.js';
 import PromiseAlbums from './albums.js';
 
+console.log("django-deno version: " + DjangoDenoSettings.version);
 
 var DELIMITER_PATCH = { replace: function() { return '^(?!.).' } };
 Vue.mixin({
