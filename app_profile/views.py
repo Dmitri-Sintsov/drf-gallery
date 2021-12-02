@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
@@ -24,7 +25,8 @@ def main(request):
         'vue_store': {
             'user': user,
             'csrfToken': get_token(request),
-        }
+        },
+        'deno_output_module_type': settings.DENO_OUTPUT_MODULE_TYPE,
     }
     return render(request, 'main.html', context)
 

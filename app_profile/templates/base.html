@@ -12,5 +12,21 @@
 
 {% block script %}
     {{ block.super }}
+    <script>
+    // https://github.com/systemjs/systemjs#ie11-support
+    if (typeof URLSearchParams === 'undefined') {
+        document.write('<script src="{% static 'djk/js/lib/url-search-params-polyfill.js' %}"><\/script>');
+    }
+    if (typeof CSS === 'undefined') {
+        document.write('<script src="{% static 'djk/js/lib/css.escape.js' %}"><\/script>');
+    }
+    if (typeof Promise === 'undefined') {
+        document.write('<script src="{% static 'djk/js/lib/bluebird.core.min.js' %}"><\/script>');
+    }
+    if (typeof fetch === 'undefined') {
+        document.write('<script src="{% static 'djk/js/lib/fetch.umd.js' %}"><\/script>');
+    }
+    </script>
+    <script src="{% static 'djk/js/lib/system.min.js' %}"></script>
     <script type="module" src="{% static 'components/main.js' %}"></script>
 {% endblock script %}

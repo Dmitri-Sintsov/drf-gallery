@@ -144,5 +144,35 @@ STATICFILES_FINDERS = (
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+DENO_ROLLUP_ENTRY_POINTS = [
+    'components/albums.js',
+    'components/login.js',
+    'components/main.js',
+    'components/signup.js',
+]
+
+DENO_ROLLUP_BUNDLES = {
+    'vuebundle': {
+        'writeEntryPoint': 'components/vuebundle.js',
+        'matches': [
+            'js/vue/*',
+            'components/bs-form.js',
+            'components/viewmodel-mixin.js',
+        ],
+        'excludes': [],
+        'virtualEntryPoints': 'matches',
+        'virtualEntryPointsExcludes': 'excludes',
+    },
+}
+
+# Do not forget to re-run collectrollup management command after changing rollup.js bundles module type:
+DENO_OUTPUT_MODULE_TYPE = 'module' if DEBUG else 'systemjs-module'
+
+# Run $VIRTUAL_ENV/djk-sample/cherry_django.py to check validity of collectrollup command output.
+DENO_ROLLUP_COLLECT_OPTIONS = {
+    'terser': True,
+}
+
 DENO_ENABLE = True
 DENO_DEBUG = False
+DENO_RELOAD = False
