@@ -23,7 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'c6utj4*z)1-r^6$iek4)f0@vckvkl+3^j8%jabvhgs%p35$nil'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+TRUE_STR = ('true', '1', 'on', 'yes', 't')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'true').lower() in TRUE_STR
+CHERRYPY_STATIC = os.environ.get('CHERRYPY_STATIC', 'false').lower() in TRUE_STR
 
 ALLOWED_HOSTS = []
 
@@ -145,17 +147,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DENO_ROLLUP_ENTRY_POINTS = [
-    'components/albums.js',
-    'components/login.js',
     'components/main.js',
-    'components/signup.js',
 ]
 
 DENO_ROLLUP_BUNDLES = {
     'vuebundle': {
-        'writeEntryPoint': 'components/vuebundle.js',
+        'writeEntryPoint': 'components/main.js',
         'matches': [
             'js/vue/*',
+            'components/albums.js',
+            'components/login.js',
+            'components/signup.js',
             'components/bs-form.js',
             'components/viewmodel-mixin.js',
         ],
