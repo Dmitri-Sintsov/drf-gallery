@@ -27,7 +27,8 @@ TRUE_STR = ('true', '1', 'on', 'yes', 't')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'true').lower() in TRUE_STR
 CHERRYPY_STATIC = os.environ.get('CHERRYPY_STATIC', 'false').lower() in TRUE_STR
 
-ALLOWED_HOSTS = []
+# Allow localhost otherwise cherrypy would fail in production with HTTP 400 error.
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition

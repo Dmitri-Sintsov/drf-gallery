@@ -27,6 +27,6 @@
         document.write('<script src="{% static 'djk/js/lib/fetch.umd.js' %}"><\/script>');
     }
     </script>
-    <script src="{% static 'djk/js/lib/system.min.js' %}"></script>
-    <script type="module" src="{% static 'components/main.js' %}"></script>
+    <script src="{% static 'js/system.min.js' %}"></script>
+    <script type="{{ deno_output_module_type }}" src="{% static 'components/main.js' %}"></script>
 {% endblock script %}
