@@ -16,7 +16,7 @@ django.setup()
 
 class DjangoApplication:
     HOST = "127.0.0.1"
-    PORT = 8010
+    PORT = 8002
 
     def mount_static(self, url, root):
         """
